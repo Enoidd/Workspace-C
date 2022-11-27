@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="Workspace_ASD" Database="" Version="10000">
+  <Project Name="001_Ordinamento" Path="001_Ordinamento/001_Ordinamento.project" Active="No"/>
+  <Project Name="002_Ricorsione" Path="002_Ricorsione/002_Ricorsione.project" Active="No"/>
+  <Project Name="003_Pile" Path="003_Pile/003_Pile.project" Active="No"/>
+  <Project Name="004_Code" Path="004-Code/004-Code.project" Active="No"/>
+  <Project Name="005_Code-tramite-pile" Path="005_Code-tramite-pile/005_Code-tramite-pile.project" Active="No"/>
+  <Project Name="006_Pile-tramite-code" Path="006_Pile-tramite-code/006_Pile-tramite-code.project" Active="No"/>
+  <Project Name="007_Singly_linked_list" Path="007_Singly_linked_list/007_Singly_linked_list.project" Active="No"/>
+  <Project Name="008_Liste_doppiamente_concatenate" Path="008_Liste_doppiamente_concatenate/008_Liste_doppiamente_concatenate.project" Active="No"/>
+  <Project Name="009_Alberi_binari" Path="009_Alberi_binari/009_Alberi_binari.project" Active="No"/>
+  <Project Name="010_Alberi_Arbitrari" Path="010_Alberi_Arbitrari/010_Alberi_Arbitrari.project" Active="No"/>
+  <Project Name="011_Alberi_binari_esercizi" Path="011_Alberi_binari_esercizi/011_Alberi_binari_esercizi.project" Active="Yes"/>
+  <Project Name="000_Homeworks" Path="000_prova/000_prova.project" Active="No"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="Debug">
+      <Environment/>
+      <Project Name="prova" ConfigName="Debug"/>
+      <Project Name="001_Ordinamento" ConfigName="Debug"/>
+      <Project Name="002_Ricorsione" ConfigName="Debug"/>
+      <Project Name="003_Pile" ConfigName="Debug"/>
+      <Project Name="1" ConfigName="Debug"/>
+      <Project Name="004_Code" ConfigName="Debug"/>
+      <Project Name="005_Code-tramite-pile" ConfigName="Debug"/>
+      <Project Name="006_Pile-tramite-code" ConfigName="Debug"/>
+      <Project Name="007_Singly_linked_list" ConfigName="Debug"/>
+      <Project Name="008_Liste_doppiamente_concatenate" ConfigName="Debug"/>
+      <Project Name="009_Alberi_binari" ConfigName="Debug"/>
+      <Project Name="010_Alberi_Arbitrari" ConfigName="Debug"/>
+      <Project Name="011_Alberi_binari_esercizi" ConfigName="Debug"/>
+      <Project Name="000_Homeworks" ConfigName="Debug"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Release">
+      <Environment/>
+      <Project Name="prova" ConfigName="Release"/>
+      <Project Name="001_Ordinamento" ConfigName="Release"/>
+      <Project Name="002_Ricorsione" ConfigName="Release"/>
+      <Project Name="003_Pile" ConfigName="Release"/>
+      <Project Name="1" ConfigName="Release"/>
+      <Project Name="004_Code" ConfigName="Release"/>
+      <Project Name="005_Code-tramite-pile" ConfigName="Release"/>
+      <Project Name="006_Pile-tramite-code" ConfigName="Release"/>
+      <Project Name="007_Singly_linked_list" ConfigName="Release"/>
+      <Project Name="008_Liste_doppiamente_concatenate" ConfigName="Release"/>
+      <Project Name="009_Alberi_binari" ConfigName="Release"/>
+      <Project Name="010_Alberi_Arbitrari" ConfigName="Release"/>
+      <Project Name="011_Alberi_binari_esercizi" ConfigName="Release"/>
+      <Project Name="000_Homeworks" ConfigName="Release"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>
