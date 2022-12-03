@@ -5,8 +5,8 @@
   <TabInfoArray Name="TabInfoArray">
     <TabInfo>
       <wxString Value="/home/giammaria/Workspace_git/Workspace_ASD/011_Alberi_binari_esercizi/main.c" Name="FileName"/>
-      <int Value="329" Name="FirstVisibleLine"/>
-      <int Value="337" Name="CurrentLine"/>
+      <int Value="0" Name="FirstVisibleLine"/>
+      <int Value="10" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
