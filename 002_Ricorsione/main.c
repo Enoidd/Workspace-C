@@ -62,7 +62,6 @@ int numeroPositivi_3(int A[], int length){
 			count = 1 + numeroPositivi_3(A+1, length-1);
 		else	// Altrimenti il valore corrente non è positivo
 			count = numeroPositivi_3(A+1, length-1);
-	
 	return count;
 }
 
@@ -144,6 +143,8 @@ int multiplodi3Positivo3(int A[], int length){
 	
 	return multiplo;
 }
+
+/* ======================================================================================================= */
 
 int main(int argc, char **argv)
 {

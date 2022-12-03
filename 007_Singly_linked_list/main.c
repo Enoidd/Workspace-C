@@ -276,6 +276,24 @@ void accoda(lista* l1, lista* l2){
 	}	// sei uscito dal while, hai accodato tutti gli elementi
 }
 
+/* Funzione che verifica se all'interno di una lista tutti gli elementi sono positivi,
+ * quindi restituisce 1, restituisce 0 se c'è almeno un elemento negativo o uguale a 0 */
+int tutti_positivi_lista(lista* l1){
+	
+	int isPos = 1;	// HP. Tutti gli elementi sono positivi
+	// altrimenti lista non vuota
+	litem* i = l1->head;	// per scorrere la lista
+	/* Scorri la lista fintanto che ci sono elementi da visitare */
+	while(i!=NULL && isPos){
+	/* Il nodo corrente ha valore negativo o uguale a 0 */
+		if(i->info<=0)
+			isPos = 0;
+		else
+			i = i->next;	// Altrimenti passa al prossimo nodo
+	}	// Sei uscito dal while, hai visitato tutti i nodi della lista
+	return isPos;
+}
+
 int main(int argc, char **argv)
 {
 	/* Creazione lista */
@@ -431,4 +449,30 @@ int main(int argc, char **argv)
 	printf("\nAccodamento lista, lista generata: ");
 	print_lista(lista3);
 	printf("\n");
+	
+	/*==========================================================================================================================*/
+	
+	/* Creazione lista */
+	lista* lista5 = new_lista();
+	
+	/* Inserimento in testa 'lista5'*/
+	insert(lista5, 0);
+	insert(lista5, 22);
+	insert(lista5, 33);
+	insert(lista5, 45);
+	
+	/* Inserimento in coda 'lista4' */
+	add(lista5, 46);
+	add(lista5, 37);
+	add(lista5, 28);
+	add(lista5, 19);
+	
+	printf("\nStampa lista 'lista5': ");
+	print_lista(lista5);
+	
+	/* Verifica se tutti gli elementi della lista 'lista5' sono positivi */
+	if(tutti_positivi_lista(lista5))
+		printf("\nTutti i nodi della lista: 'lista5' hanno valore positivo.\n");
+	else
+		printf("\nNon tutti i nodi della lista: 'lista5' hanno valore positivo.\n");	// Atteso
 }

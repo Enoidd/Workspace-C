@@ -118,9 +118,9 @@ nodo* cerca_postordine(nodo* t, int v){
 	if(t==NULL)
 		return NULL;
 	else{	// Altrimenti albero non vuoto
-		/* Lancio la procedura su sotto albero radicato a sx e su sotto albero radicato a dx */
 		nodo* l = cerca_postordine(t->left, v);
 		nodo* r = cerca_postordine(t->right, v);
+		/* Lancio la procedura su sotto albero radicato a sx e su sotto albero radicato a dx */
 		/* Se lo hai trovato a sinistra */
 		if(l!=NULL){
 			return l;
@@ -195,17 +195,18 @@ int cercaSim(albero t, int v){
 		trovato = cercaSim(t->left, v);
 		/* Non lo hai trovato a sx */
 		if(trovato==0){
-			trovato = 
+			/* Eseguo la computazione su 't' */
+			if(t->info==v){
+				trovato = 1;
+			}
 		}
-		/* Eseguo la computazione su 't' */
-		else if(t->info==v){
-			trovato = 1;
-		}
-		/* Lancio la procedura sul sotto albero radicato a dx */
-		trovato = cercaSim(t->right, v);
-		/* Non lo hai trovato a dx */
-		if(trovato!=0){
-			trovato = 1;
+		else if(trovato==0){	// non lo hai trovato a sx e non ' t'
+			/* Lancio la procedura sul sotto albero radicato a dx */
+			trovato = cercaSim(t->right, v);
+			/* Non lo hai trovato a dx */
+			if(trovato!=0){
+				trovato = 1;
+			}
 		}
 	}
 	return trovato;
@@ -224,6 +225,117 @@ int contaNodi(albero t){
 		return 0;
 	}
 	return 1 + contaNodi(t->left) + contaNodi(t->left);
+}
+
+/* Funzione che verifica se l'albero è un cammino, cioè se tutti i nodi hanno grado 1, con l'eccezione 
+ * dell'unica foglia. Si assume che un albero vuoto sia un cammino. */
+/* POSTORDINE */
+int cammino(albero t){
+	/* Se l'albero è vuoto */
+	if(t==NULL)
+		return 1;	// è un cammino
+	/* Guarda il sotto albero radicato a sx */
+	if(cammino(t->left) && t->right==NULL)
+		return 1;
+	/* Guarda il sotto albero radicato a dx */
+	if(cammino(t->right) && t->left==NULL)
+		return 1;
+	/* Se è presente soltanto la radice */
+	if(t->left==NULL && t->right==NULL)
+		return 1;
+	return 0;
+}
+
+/* Funzione che calcola l'altezza di un albero, cioè il numero di archi del cammino che va dalla radice
+ * alla foglia più profonda, ritorna -1 se l'albero è vuoto */
+int height(albero t){
+	/* Se l'albero è vuoto */
+	if(t==NULL)
+		return -1;
+	/* Lancia la procedura su sotto albero a sx e dx */
+	int l = height(t->left);
+	int r = height(t->right);
+	
+	int max = l;	// l'altezza inizialmente vale l'altezza del sotto albero radicato a sx
+	/* Se l'altezza del sotto albero radicato a dx è maggiore del max corrente */
+	if(r>max)
+		max = r;	// Aggiorna il nuovo max al valore del sotto albero radicato a dx
+	
+	return max+1;
+}
+
+/* Funzione che calcola la media dei valori contenuti nell'albero binario */
+void averageRic(albero t, int* somma, int* contatore){
+	/* Se l'albero è vuoto */
+	if(t==NULL)
+		return;
+		
+	/* Calcola la somma */
+	*somma += t->info;	// somma a somma il valore del nodo corrente
+	(*contatore) += (*contatore)+1;	// Aggiorna il contatore
+	
+	/* Lancia la procedura sul sotto albero radicato a sx e dx */
+	averageRic(t->left, somma, contatore);
+	averageRic(t->right, somma, contatore);
+
+}
+
+int average(albero t){
+	int somma = 0;	// la somma dei valori dei nodi dell'albero
+	int contatore = 0;	// il numero di nodi presenti nell'albero
+	
+	/* Invocazione della funzione ricorsiva */
+	averageRic(t, &somma, &contatore);
+	
+	int media = somma/contatore;
+	
+	return media;
+}
+
+/* Funzione che verifica se l'albero binario è completo, ritorna true se l'albero è vuoto */
+int completoRic(albero t){
+	/* Se l'albero è vuoto */
+	if(t==NULL)
+		return -1;
+	
+	/* Lancio la procedura su 't' */
+	/* Il nodo non ha figlio sinistro e figlio destro */
+	if(t->left==NULL && t->right==NULL){
+		return 0;
+	}
+	
+	int l = completoRic(t->left);	// guardo sul sotto albero radicato a sx
+	int r = completoRic(t->right);	// guardo sul sotto albero radicato a dx
+	
+	/* Il sotto albero radicato a sx e a dx non è un albero completo */
+	if(l==-1 && r==-1)
+		return -1;
+	
+	/* Altrimenti in questo punto i sotto alberi radicati a sx e dx sono due sottoalberi radicati completi */
+	/* Se la profondità del sotto albero a sx è diversa dalla profondità del sotto albero a dx uno dei due non è completo */
+	if(l!=r)
+		return -1;
+		
+	return l+1;
+}
+
+int completo(nodo* n){
+	/* Se l'albero è vuoto */
+	if(n==NULL)
+		return 1;
+	// Altrimenti se sei qui non è un albero completo
+	int risultato = completoRic(n);
+	
+	return risultato!=-1;	// ritorna il risultato se è diverso da 1
+}
+
+/* Funzione che dealloca tutti i nodi di un albero */
+albero dealloca(albero t){
+	/* Se l'albero è vuoto */
+	if(t==NULL)
+		return NULL;
+	/* Lancia la procedura sul sotto albero radicato a sx e sul sotto albero radicato a dx */
+	
 }
 
 int main(int argc, char **argv)
@@ -285,7 +397,15 @@ int main(int argc, char **argv)
 	else
 		printf("\nValore 2, non trovato nell'albero.\n");
 		
-		
 	/* CONTA NODI */
 	printf("\nNodi contati: %d.\n", contaNodi(t));
+	
+	/* CAMMINO */
+	if(cammino(t))
+		printf("\nL'albero è un cammino.\n");
+	else
+		printf("\nL'albero non è un cammino.\n");
+	
+	/* AVERAGE */
+	//printf("\nMedia dei nodi contenuti nell'albero: %d.\n", average(t));	// Atteso: 4
 }
