@@ -185,6 +185,35 @@ void add_after(lista* l, int n, int i){
 	}
 }
 
+/* ====================== SESTO HOMERWORK ====================== */
+
+/* Funione che prende in input un parametro di tipo plist* (cioè un puntatore ad un plist che è a sua volta 
+ * un puntatore ad un elemento elist della lista) e rimuove (se c'è) il primo elemento della lista. Se la
+ * lista è vuota la funzione non fa nulla */
+
+typedef struct elist{
+	int info;
+	struct elist* prev;
+	struct elist* next;
+}elist;
+
+typedef elist* plist;
+
+void rimuovi_primo(plist* p){
+	/* Se la lista è vuota */
+	if(p==NULL){
+		return;
+	}
+	else{ // Altrimenti la lista non è vuota
+		/* C'è almeno un elemento nella lista */
+		plist temp = *p;	// temp vale il primo nodo della lista
+		(*p) = (*p)->next;	// aggiorna il vecchio primo nodo al secondo nodo della lista
+		(*p)->prev = NULL;	// il nuovo primo nodo non ha predecessori
+		free(temp);
+	}
+}
+
+/* =================================================================== */
 
 int main(int argc, char **argv)
 {

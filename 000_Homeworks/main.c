@@ -60,20 +60,7 @@ int originale(int* A, int lenA, int* B, int lenB) {
 
 /* ============================================================== */
 
-/* ====================== SESTO HOMERWORK ====================== */
-
-/* Funione che prende in input un parametro di tipo plist* (cioè un puntatore ad un plist che è a sua volta 
- * un puntatore ad un elemento elist della lista) e rimuove (se c'è) il primo elemento della lista. Se la
- * lista è vuota la funzione non fa nulla */
-
-typedef struct plist{
-	int info;
-	struct plist* next;
-}plist;
-
-typedef plist* elist;
-
-
+/* ====================== SESTO HOMERWORK ======================> SU FILE Liste_doppiamente_concatenate
 
 /* ============================================================== */
 
