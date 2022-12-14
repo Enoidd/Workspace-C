@@ -296,30 +296,21 @@ int tutti_positivi_lista(lista* l1){
 
 /* Funzione che verifica se gli elementi in lista sono in ordine crescente */
 int ordine_crescente(lista* l1){
-	
-	if(l1 == NULL) return 0;
+	int ordinata = 1;
 
-    while(l1->head->next!=NULL){
-        if(l1->head->info < l1->head->next->info){
-            return 0;
-        }
-        l1->head = l1->head->next;
-    }
-    
-    return 1;
+	if(l1==NULL)
+		ordinata = 0;
+	litem* i = l1->head;
+	while(i!=NULL && !ordinata){
+		if(i->info > i->next->info)
+			ordinata = 0;
+		i = i->next;
+	}
+	return ordinata;
 }
 
 int main(int argc, char **argv)
 {
-	/* PRETEST */
-
-	lista* listaT = new_lista();
-	insert(listaT, 1);
-	insert(listaT, 2);
-	insert(listaT, 3);
-	insert(listaT, 4);
-
-	printf("\nordina_lista, atteso: 1, calcolato: %d", ordine_crescente(listaT));
 
 	/* Creazione lista */
 	lista* lista1 = new_lista();
@@ -500,4 +491,16 @@ int main(int argc, char **argv)
 		printf("\nTutti i nodi della lista: 'lista5' hanno valore positivo.\n");
 	else
 		printf("\nNon tutti i nodi della lista: 'lista5' hanno valore positivo.\n");	// Atteso
+
+	
+
+	/* PRETEST */
+
+	lista* listaT = new_lista();
+	insert(listaT, 4);
+	insert(listaT, 1);
+	insert(listaT, 2);
+	insert(listaT, 0);
+
+	printf("\nordina_lista, atteso: 1, calcolato: %d", ordine_crescente(listaT));
 }
