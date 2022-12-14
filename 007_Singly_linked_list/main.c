@@ -294,8 +294,33 @@ int tutti_positivi_lista(lista* l1){
 	return isPos;
 }
 
+/* Funzione che verifica se gli elementi in lista sono in ordine crescente */
+int ordine_crescente(lista* l1){
+	
+	if(l1 == NULL) return 0;
+
+    while(l1->head->next!=NULL){
+        if(l1->head->info < l1->head->next->info){
+            return 0;
+        }
+        l1->head = l1->head->next;
+    }
+    
+    return 1;
+}
+
 int main(int argc, char **argv)
 {
+	/* PRETEST */
+
+	lista* listaT = new_lista();
+	insert(listaT, 1);
+	insert(listaT, 2);
+	insert(listaT, 3);
+	insert(listaT, 4);
+
+	printf("\nordina_lista, atteso: 1, calcolato: %d", ordine_crescente(listaT));
+
 	/* Creazione lista */
 	lista* lista1 = new_lista();
 	
@@ -392,9 +417,9 @@ int main(int argc, char **argv)
 	
 	/* IS_EMPTY -> Verifica se la lista 'lista2' è vuota */
 	if(is_empty(lista2))
-		printf("\nIS_EMPTY Lista vuota.\n");
+		printf("\nIS_EMPTY Lista2 vuota.\n");
 	else
-		printf("\nIS_EMPTY Lista non vuota.\n");	// atteso
+		printf("\nIS_EMPTY Lista2 non vuota.\n");	// atteso
 	
 	/* EMPTY -> Svuota la lista 'lista2' */
 	empty(lista2);
@@ -402,9 +427,9 @@ int main(int argc, char **argv)
 	
 	/* IS_EMPTY -> Verifica se la lista 'lista2' è vuota */
 	if(is_empty(lista2))
-		printf("\nIS_EMPTY Lista vuota.\n");	// atteso
+		printf("\nIS_EMPTY Lista2 vuota.\n");	// atteso
 	else
-		printf("\nIS_EMPTY Lista non vuota.\n");
+		printf("\nIS_EMPTY Lista2 non vuota.\n");
 	
 	/*==========================================================================================================================*/
 	
