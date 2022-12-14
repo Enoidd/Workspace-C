@@ -330,7 +330,7 @@ int completo(nodo* n){
 }
 
 /* Funzione che dealloca tutti i nodi di un albero */
-albero dealloca(){
+albero dealloca(albero t){
 	/* Se l'albero è vuoto */
 	if(t==NULL)
 		return NULL;
