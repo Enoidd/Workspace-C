@@ -250,17 +250,17 @@ int cammino(albero t){
  * alla foglia più profonda, ritorna -1 se l'albero è vuoto */
 int height(albero t){
 	/* Se l'albero è vuoto */
-	if(t==NULL)
+	if(t==NULL){
 		return -1;
-	/* Lancia la procedura su sotto albero a sx e dx */
+	}	// Altrimenti l'albero non è vuoto
 	int l = height(t->left);
 	int r = height(t->right);
-	
-	int max = l;	// l'altezza inizialmente vale l'altezza del sotto albero radicato a sx
-	/* Se l'altezza del sotto albero radicato a dx è maggiore del max corrente */
-	if(r>max)
-		max = r;	// Aggiorna il nuovo max al valore del sotto albero radicato a dx
-	
+
+	int max = l;	// l'altezza è massima è l'altezza del sotto albero radicato a sx
+	/* Se il sotto albero radicato a destra è maggiore di max */
+	if(r>max){
+		max = r;	// Aggiorna il nuovo max
+	}
 	return max+1;
 }
 
@@ -330,7 +330,7 @@ int completo(nodo* n){
 }
 
 /* Funzione che dealloca tutti i nodi di un albero */
-albero dealloca(albero t){
+albero dealloca(){
 	/* Se l'albero è vuoto */
 	if(t==NULL)
 		return NULL;
