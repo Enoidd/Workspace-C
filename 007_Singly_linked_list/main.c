@@ -301,12 +301,38 @@ int ordine_crescente(lista* l1){
 	if(l1==NULL)
 		ordinata = 0;
 	litem* i = l1->head;
-	while(i!=NULL && !ordinata){
+	while(i->next!=NULL && ordinata){
 		if(i->info > i->next->info)
 			ordinata = 0;
-		i = i->next;
+		else
+			i = i->next;
 	}
 	return ordinata;
+}
+
+/* Funzione che verifica se il primo e l'ultimo elemento della lista sono uguali */
+int primo_ultimo(lista* l1){
+	/* Lista vuota */
+	if(l1==NULL) return 0;
+	// Altrimenti lista non vuota
+	/* Un solo elemento in lista */
+	if(l1->head->next==NULL) return 0;
+	/* C'è più di un elemento in lista */
+	litem* i = l1->head;
+	while(i->next!=NULL){
+		i = i->next;
+	}	// hai visitato tutti i nodi della lista
+	if(i->info && l1->head->info)
+			return 1;
+		
+	return 0;
+}
+
+/* Funzione che verifica se ci sono elementi doppi nella lista */
+int doppioni(lista* l1){
+	/* Se la lista è vuota */
+	if(l1==NULL) return 0;
+	
 }
 
 int main(int argc, char **argv)
@@ -497,10 +523,16 @@ int main(int argc, char **argv)
 	/* PRETEST */
 
 	lista* listaT = new_lista();
-	insert(listaT, 4);
-	insert(listaT, 1);
+	insert(listaT, 3);
+	insert(listaT, 2);
 	insert(listaT, 2);
 	insert(listaT, 0);
 
-	printf("\nordina_lista, atteso: 1, calcolato: %d", ordine_crescente(listaT));
+	/* Verifica se la lista è ordinata in modo crescente */
+	printf("\nordina_lista, atteso: 1, calcolato: %d.\n", ordine_crescente(listaT));	// CORRETTA
+	/* Verifica se il primo e l'ultimo elemento della lista sono uguali */
+	printf("\nprimo_ultimo, atteso: 1, calcolato: %d.\n", primo_ultimo(listaT));		// CORRETTA
+	/* Verifica se nella ci sono nodi due elementi doppi */
+	printf("\nelementi doppi, atteso: 1, calcolato: %d.\n", doppi(listaT));
+
 }
