@@ -328,11 +328,65 @@ int primo_ultimo(lista* l1){
 	return 0;
 }
 
-/* Funzione che verifica se ci sono elementi doppi nella lista */
+/* Funzione che verifica se ci sono due elementi consecutivi uguali nella lista */
 int doppioni(lista* l1){
 	/* Se la lista è vuota */
 	if(l1==NULL) return 0;
-	
+	/* C'è un solo elemento nella lista */
+	if(l1->head->next==NULL) return 0;
+	/* C'è più di un elemento */
+	litem* i = l1->head;
+	while(i->next!=NULL){
+		if(i->info==i->next->info)
+			return 1;
+		else
+			i = i->next;
+	}
+	return 0;
+}
+
+/*  Verifica se esiste un campo info di un nodo della lista uguale alla lunghezza della lista */
+int info_uguale_lunghezza(lista* l1){
+	int count = 0;	// Lunghezza della lista 
+	int trovato = 0;	// HP. inizialmente nessun nodo con valore pari alla lunghezza è stato trovato 
+	/* Se la lista non è vuota */
+	if(l1!=NULL){
+		litem* i = l1->head;	// per scorrere la lista
+		/* Scorri la lista fintanto che ci sono nodi da visitare */
+		while(i!=NULL){
+			count++;	// nuovo nodo contato
+			i = i->next;	// passa al prossimo nodo della lista
+		}	// hai visitato tutti i nodi della lista
+		/* Controlla se l'elemento corrente ha valore pari alla dimensione della lista che vale 'count' */
+		litem* j = l1->head;
+		while(j!=NULL && !trovato){
+			/* verifica se c'è nodo con valore uguale a count */
+			if(j->info==count)
+				trovato = 1;
+			else
+				j = j->next;
+		}	// Hai visitato tutti i nodi della lista
+	}
+	return trovato;
+}
+
+/* Funzione che conta quanti sono i nodi della lista con campo info minore del campo info del nodo successivo */
+int minore_successivo(lista* l1){
+	int count = 0; 
+
+	if(l1!=NULL){
+		//litem* i = l1->head;
+		while(l1->head->next!=NULL){
+			//if(i->info < i->next->info)
+			if(l1->head->info < l1->head->next->info)
+				count++;
+			//i = i->next;
+			l1->head = l1->head->next;
+		}
+	}
+	return count;
+
+	/* === NB. NON CONOSCO BENE LA RICHIESTA PRECISA DELLA FUNZIONE */
 }
 
 int main(int argc, char **argv)
@@ -389,6 +443,7 @@ int main(int argc, char **argv)
 	
 	/* MASSIMO -> Calcola il massimo valore contenuto nella lista */
 	printf("\nIl massimo valore contenuto nella lista ha valore: %d.\n", massimo(lista1));	// atteso
+	/* Lista vuota */
 	
 	/* SOMMA -> Ritorna la somma di tutti i valori contenuti nella lista */
 	printf("\nLa somma di tutti gli elementi della lista: %d.\n", somma(lista1));
@@ -524,15 +579,19 @@ int main(int argc, char **argv)
 
 	lista* listaT = new_lista();
 	insert(listaT, 3);
-	insert(listaT, 2);
-	insert(listaT, 2);
-	insert(listaT, 0);
+	insert(listaT, 5);
+	insert(listaT, 4);
+	insert(listaT, 5);
+	lista* listaT1 = new_lista();
 
 	/* Verifica se la lista è ordinata in modo crescente */
 	printf("\nordina_lista, atteso: 1, calcolato: %d.\n", ordine_crescente(listaT));	// CORRETTA
 	/* Verifica se il primo e l'ultimo elemento della lista sono uguali */
 	printf("\nprimo_ultimo, atteso: 1, calcolato: %d.\n", primo_ultimo(listaT));		// CORRETTA
-	/* Verifica se nella ci sono nodi due elementi doppi */
-	printf("\nelementi doppi, atteso: 1, calcolato: %d.\n", doppi(listaT));
-
+	/* Verifica se nella ci sono due elementi consecutivi uguali */
+	printf("\nelementi doppi, atteso: 1, calcolato: %d.\n", doppioni(listaT));			// CORRETTA
+	/* Verifica se esiste un campo info di un nodo della lista uguale alla lunghezza della lista */
+	printf("\ninfo_uguale_lunghezza, atteso: 1, calcolato: %d.\n", info_uguale_lunghezza(listaT));	// Dimensione lista 4 // CORRETTA
+	/* Funzione che conta quanti sono i nodi della lista con campo info minore del campo info del nodo successivo */
+	printf("\nminore_successivo, atteso 2, calcolato: %d.\n", minore_successivo(listaT));
 }
