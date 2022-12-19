@@ -28,6 +28,7 @@ void print_lista(lista  l){
         printf("[%d]--", l->info);
         l = l->next;    // passa al prossimo nodo della lista
     }
+    printf("NULL\n");
 }
 
 /* Funzione che inserisce un elemento in testa alla lista */
@@ -55,7 +56,7 @@ void add(lista* l, int v){
 }
 
 /* Funzione che fa una cancellazione in testa */
-int head(lista* l){
+int delete_head(lista* l){
     if((*l)==NULL)
         printf("\nError underflow. Lista vuota, cancellazione in coda.\n");
     nodo* temp = (*l);
@@ -68,12 +69,12 @@ int head(lista* l){
 
 
 /* Funzione che fa una cancellazione in coda */
-int tail(lista* l){
+int delete_tail(lista* l){
     if((*l)==NULL){
         printf("\nError underflow. Lista vuota, cancellaione in coda fallita.\n");
     }
     if((*l)->next==NULL)
-        return head(l);
+        return delete_head(l);
     nodo* i = (*l);
     while(i->next->next!=NULL){
         i = i->next;
@@ -94,7 +95,7 @@ int is_empty(lista* l){
 /* Funzione che svuota la lista */
 lista* empty(lista* l){
     if((*l)==NULL){
-        printf("\nSvuotamento lista fllito. Lista vuota.\n");
+        printf("\nSvuotamento lista fallito. Lista vuota.\n");
     }
     nodo* i = (*l);
     while(i!=NULL){
@@ -104,6 +105,24 @@ lista* empty(lista* l){
     }
     return NULL;
 }
+
+/* Funzione che ritorna il massimo valore contenuto nella lista */
+int massimo(lista* l){
+    int max;
+    if((*l)==NULL){
+        printf("\nCalcolo del massimo fallito. Lista vuota.\n");
+    }
+    nodo* i = (*l);
+    max = i->info;
+    while(i->next!=NULL){
+        if(i->info>=max)
+            max = i->info;
+        i = i->next;
+    }
+    return max;
+}
+
+/* Funzione che ritorna la somma dei valori contenuti nei nodi della lista */
 
 int main(){
 
@@ -121,20 +140,21 @@ int main(){
     add(&l1, 3);
     insert(&l1, 4);
 
-    print_lista(l1);    // [4]---[3]---[2]---[1]---NULL
-    
+    print_lista(l1);    // [4]---[1]---[2]---[3]---NULL
+    printf("\nMassimo valore calcolato: %d.\n", massimo(&l1));
     /* Cancellazione in testa a 'l1' */
-    head(&l1);
+    delete_head(&l1);
 
-    print_lista(l1);    // [3]---[2]---[1]---NULL
+    print_lista(l1);    // [1]---[2]---[3]---NULL
 
     /* Cancellazione in coda di 'l1' */
-    tail(&l1);
-
-    print_lista(l1);    // [3]---[2]---NULL
+    delete_tail(&l1);
+    printf("\n");
+    print_lista(l1);    // [1]---[2]---NULL
 
     /* IS_EMPTY */
     printf("\nIS_EMPTY: %d.\n\n", is_empty(&l1)); // atteso: 0
     
-
+    /* MASSIMO */
+    printf("\nMassimo valore calcolato: %d.\n", massimo(&l1));
 }
