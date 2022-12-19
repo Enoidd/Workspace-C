@@ -19,7 +19,7 @@ lista new_lista(){
 
 /* Funzione che stampa una lista */
 void print_lista(lista  l){
-    if(*(&l)==NULL){
+    if(l==NULL){
         printf("\nError underflow. Lista vuota. Print fallita.\n\n");
         return;
     }
@@ -28,15 +28,81 @@ void print_lista(lista  l){
         printf("[%d]--", l->info);
         l = l->next;    // passa al prossimo nodo della lista
     }
-    printf("NULL\n");
 }
 
 /* Funzione che inserisce un elemento in testa alla lista */
 void insert(lista* l, int v){
-    nodo* new = malloc(sizeof(lista ));
+    nodo* new = malloc(sizeof(lista));
     new->info = v;
     new->next = *l;
     *l = new;
+}
+
+/* Funzione che inserisce un elemento in coda alla lista  */
+void add(lista* l, int v){
+    if((*l)==NULL){
+        insert(l, v);
+        return;
+    }
+    nodo* i = (*l); // per scorrere la lista
+    while(i->next!=NULL){
+        i = i->next;
+    }
+    nodo* out = malloc(sizeof(nodo));
+    out->info = v;
+    out->next = NULL;
+    i->next = out;
+}
+
+/* Funzione che fa una cancellazione in testa */
+int head(lista* l){
+    if((*l)==NULL)
+        printf("\nError underflow. Lista vuota, cancellazione in coda.\n");
+    nodo* temp = (*l);
+    int v = (*l)->info;
+    (*l) = (*l)->next;
+    free(temp);
+
+    return v;
+}
+
+
+/* Funzione che fa una cancellazione in coda */
+int tail(lista* l){
+    if((*l)==NULL){
+        printf("\nError underflow. Lista vuota, cancellaione in coda fallita.\n");
+    }
+    if((*l)->next==NULL)
+        return head(l);
+    nodo* i = (*l);
+    while(i->next->next!=NULL){
+        i = i->next;
+    }
+    nodo* temp = i->next;
+    int v = i->next->info;
+    i->next = NULL;
+    free(temp);
+
+    return v;
+}
+
+/* Funzione che verifica se una lista è vuota */
+int is_empty(lista* l){
+    return (*l)==NULL;
+}
+
+/* Funzione che svuota la lista */
+lista* empty(lista* l){
+    if((*l)==NULL){
+        printf("\nSvuotamento lista fllito. Lista vuota.\n");
+    }
+    nodo* i = (*l);
+    while(i!=NULL){
+        nodo* temp = i;
+        i = i->next;
+        free(temp);
+    }
+    return NULL;
 }
 
 int main(){
@@ -46,12 +112,29 @@ int main(){
 
     print_lista(l1);    // Atteso: Error underflow. Lista vuota. Print fallita.
 
+    /* IS_EMPTY */
+    printf("\nIS_EMPTY: %d.\n\n", is_empty(&l1)); // atteso: 0
+
     /* Inserimenti in testa a 'l1' */
     insert(&l1, 1);
-    insert(&l1, 2);
-    insert(&l1, 3);
+    add(&l1, 2);
+    add(&l1, 3);
+    insert(&l1, 4);
+
+    print_lista(l1);    // [4]---[3]---[2]---[1]---NULL
+    
+    /* Cancellazione in testa a 'l1' */
+    head(&l1);
 
     print_lista(l1);    // [3]---[2]---[1]---NULL
+
+    /* Cancellazione in coda di 'l1' */
+    tail(&l1);
+
+    print_lista(l1);    // [3]---[2]---NULL
+
+    /* IS_EMPTY */
+    printf("\nIS_EMPTY: %d.\n\n", is_empty(&l1)); // atteso: 0
     
-   
+
 }
