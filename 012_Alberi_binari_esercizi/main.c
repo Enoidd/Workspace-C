@@ -12,9 +12,7 @@ typedef nodo* albero;
 
 /*	Funzione che crea un nuovo albero */
 albero newTree(){
-	albero new = malloc(sizeof(albero));	// alloca memoria per un nuovo albero
-	new = NULL;	// inizialmente l'albero è vuoto
-	
+	albero new = (albero)malloc(sizeof(albero));	// alloca memoria per un nuovo albero
 	return new;
 }
 
@@ -265,7 +263,7 @@ int height(albero t){
 }
 
 /* Funzione che calcola la media dei valori contenuti nell'albero binario */
-void averageRic(albero t, int* somma, int* contatore){
+void averageRic(nodo* t, int* somma, int* contatore){
 	/* Se l'albero è vuoto */
 	if(t==NULL)
 		return;
@@ -280,7 +278,7 @@ void averageRic(albero t, int* somma, int* contatore){
 
 }
 
-int average(albero t){
+int average(nodo* t){
 	int somma = 0;	// la somma dei valori dei nodi dell'albero
 	int contatore = 0;	// il numero di nodi presenti nell'albero
 	
@@ -330,12 +328,34 @@ int completo(nodo* n){
 }
 
 /* Funzione che dealloca tutti i nodi di un albero */
-albero dealloca(albero t){
+void dealloca(nodo** t){
 	/* Se l'albero è vuoto */
-	if(t==NULL)
-		return NULL;
+	if((*t)==NULL)
+		return;
 	/* Lancia la procedura sul sotto albero radicato a sx e sul sotto albero radicato a dx */
-	
+	dealloca(&(*t)->left);
+	dealloca(&(*t)->right);
+
+	free(*t);
+	(*t) = NULL;
+}
+
+/* Funzione che elimina un sotto albero radicato al nodo 'x' */
+void pota(nodo** n, nodo* x){
+	if((*n)==NULL) return;
+	if((*n)==x){
+		dealloca(n);
+		return;
+	}
+	/* Sx */
+	if((*n)->left==x){
+		dealloca(&(*n)->left);
+	}
+
+	/* Dx */
+	if((*n)->right==x){
+		dealloca(&(*n)->right);
+	}
 }
 
 int main(int argc, char **argv)
@@ -407,5 +427,11 @@ int main(int argc, char **argv)
 		printf("\nL'albero non è un cammino.\n");
 	
 	/* AVERAGE */
-	//printf("\nMedia dei nodi contenuti nell'albero: %d.\n", average(t));	// Atteso: 4
+	printf("\nMedia dei nodi contenuti nell'albero: %d.\n", average(t));	// Atteso: 4
+
+	/* DEALLOCA ALBERO */
+	dealloca(&t);
+
+	/* IS_EMPTY */
+	printf("\nVerifica se l'albero 't' e' vuoto, valore calcolato: %d.\n", is_empty(t));	// Atteso: 1
 }

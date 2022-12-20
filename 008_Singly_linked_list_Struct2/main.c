@@ -5,16 +5,21 @@
 typedef struct nodo{
     int info;
     struct nodo* next;
-}nodo; // elist è il nodo della list 
+}nodo; // nodo è il nodo della lista
 
 typedef nodo* lista;   // plist è un puntatore a elist
 
 /* Funzione che crea una lista */
 lista new_lista(){
     lista  new = malloc(sizeof(lista));  // alloca memoria per una nuova lista
-    new = NULL; // lista vuota
-
     return new;
+}
+
+/* Funzione che crea un nodo */
+nodo* node_new(){
+  nodo* n = (nodo*)malloc(sizeof(nodo));
+  n->next=NULL;
+  return n;
 }
 
 /* Funzione che stampa una lista */
@@ -33,7 +38,8 @@ void print_lista(lista  l){
 
 /* Funzione che inserisce un elemento in testa alla lista */
 void insert(lista* l, int v){
-    nodo* new = malloc(sizeof(lista));
+    nodo* new = node_new();
+
     new->info = v;
     new->next = *l;
     *l = new;
@@ -227,6 +233,23 @@ int minori_successivo(lista* l){
     return count;
 }
 
+/* HOMEWORK */
+
+
+/* Verifica se tutti i nodi della lista hanno valore positivo */
+int tuttiPositivi(lista* l){
+    if((*l)==NULL) return 0;
+    
+    int tuttiPos = 1;
+    nodo* i = (*l);
+    while(i!=NULL && tuttiPos){
+        if(i->info < 0)
+            tuttiPos = 0;
+        else
+            i = i->next;
+    }
+    return tuttiPos;
+}
 
 int main(){
 
@@ -245,6 +268,9 @@ int main(){
     insert(&l1, 4);
 
     print_lista(l1);    // [4]---[1]---[2]---[3]---NULL
+
+    /* TUTTI POSITIVI */
+    printf("\nVerifico se tutti i nodi della lista hanno campo info positivo |si(1)/no(0)|, calcolato: %d.\n", tuttiPositivi(&l1));
 
     /* MINORI DEL SUCCESSIVO */
     printf("\nVerifico quanti sono i nodi con valore minore del nodo successivo, calcolato: %d.\n", minori_successivo(&l1));
