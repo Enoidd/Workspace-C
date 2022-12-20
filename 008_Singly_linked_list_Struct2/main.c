@@ -123,6 +123,110 @@ int massimo(lista* l){
 }
 
 /* Funzione che ritorna la somma dei valori contenuti nei nodi della lista */
+int somma(lista* l){
+    int somma = 0;
+    if((*l)!=NULL){
+        nodo* i = (*l);
+        while(i!=NULL){
+            somma += i->info;
+            i = i->next;
+        }
+    }
+    return somma;
+}
+
+
+/* Funzione che verifica se un nodo contenente valore 'u' esiste nella lista */
+int search(lista* l, int u){
+    int esiste = 0;
+    if((*l)!=NULL && esiste==0){
+        nodo* i = (*l);
+        while(i!=NULL){
+            if(i->info==u)
+                esiste = 1;
+            i = i->next;
+        }
+    }
+    return esiste;
+}
+
+/* PRE-ESAME */
+
+/* Verifica se la lista ordinata in modo crescente */
+int crescente(lista* l){
+    int verificata = 1;
+    if((*l)==NULL)
+        verificata = 0;
+    if((*l)->next==NULL)
+        verificata = 1;
+    nodo* i = (*l);
+    while(i->next!=NULL && verificata){
+        if(i->info > i->next->info){
+            verificata = 0;
+        }
+        i = i->next;   
+    }
+    return verificata;
+}
+
+/* Verifica se il primo e l'ultimo nodo sono uguali */
+int primo_ultimo(lista* l){
+    if((*l)==NULL) return 0;
+    int v = (*l)->info;
+    nodo* i = (*l);
+    while(i->next!=NULL){
+        i = i->next;
+    }
+    return i->info == v;
+}
+
+/* Verifica se due valori consecutivi nella lista sono duplicati */
+int consecutivi_uguali(lista* l){
+    if((*l)==NULL) return 0;
+    if((*l)->next==NULL) return 0;
+    nodo* i = (*l);
+    while(i->next!=NULL){
+        if(i->info==i->next->info)
+            return 1;
+        else
+            i = i->next;
+    }
+    return 0;
+}
+
+/* Verifica se esiste un nodo con campo info pari alla lunghezza della lista */
+int info_lunghezza(lista* l){
+    if((*l)==NULL) return 0;
+    int count = 0;
+    nodo* i = (*l);
+    while(i!=NULL){
+        count++;
+        //printf("\nCount: %d.\n", count); DEBUG
+        i = i->next;
+    }
+    nodo* j = (*l);
+    while(j->next!=NULL){
+        if(count == j->info)
+            return 1;
+        j = j->next;
+    }
+    return 0;
+}
+
+/* Conta quanti sono i nodi minori del successivo */
+int minori_successivo(lista* l){
+    if((*l)==NULL) return 0;
+
+    int count = 0;
+    nodo* i = (*l);
+    while(i->next!=NULL){
+        if(i->info <= i->next->info)
+            count++;
+        i = i->next;
+    }
+    return count;
+}
+
 
 int main(){
 
@@ -141,7 +245,28 @@ int main(){
     insert(&l1, 4);
 
     print_lista(l1);    // [4]---[1]---[2]---[3]---NULL
+
+    /* MINORI DEL SUCCESSIVO */
+    printf("\nVerifico quanti sono i nodi con valore minore del nodo successivo, calcolato: %d.\n", minori_successivo(&l1));
+
+    /* CONSECUTIVI UGUALI */
+    printf("\nControllo esistenza due consecutivi uguali(1-Si/0-No), calcolato: %d.\n", consecutivi_uguali(&l1));
+
+    /* INFO_LUNGHEZZA */
+    printf("\nVerifico se esiste un nodo con campo info pari alla lunghezza della lista, valore calcolato: %d.\n", info_lunghezza(&l1));
+    
+    /* MASSIMO */
     printf("\nMassimo valore calcolato: %d.\n", massimo(&l1));
+
+    /* SEARCH */
+    printf("\nRicerca valore 5 nella lista, esiste(1)/non esiste(0), calcolato: %d.\n", search(&l1, 5));
+
+    /* LISTA IN ORDINE CRESCENTE */
+    printf("\nControllo se la lista e' ordinata in modo crescente, in ordine crescente(1)/non e' in ordine crescente(0), calcolato: %d.\n", crescente(&l1));
+
+    /* PRIMO_ULTIMO UGUALI */
+    printf("\nIl primo nodo è uguale(1), non è uguale(0) all'ultimo nodo, valore calcolato: %d.\n", primo_ultimo(&l1));
+
     /* Cancellazione in testa a 'l1' */
     delete_head(&l1);
 
@@ -157,4 +282,7 @@ int main(){
     
     /* MASSIMO */
     printf("\nMassimo valore calcolato: %d.\n", massimo(&l1));
+
+    /* SOMMA */
+    printf("\nSOMMA dei valori contenuti nella lista: %d.\n", somma(&l1));
 }
