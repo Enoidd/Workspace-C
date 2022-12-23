@@ -358,6 +358,16 @@ void pota(nodo** n, nodo* x){
 	}
 }
 
+/* PARENTETICA SIMMETRICA */
+
+/* PARENTETICA PREORDINE */
+
+/* Funzione che calcola il numero di nodi dell'albero che hanno lo stesso valore del genitore del genitore
+ * cioè del nonno */
+int valoreNonno(albero t){
+	
+}
+
 int main(int argc, char **argv)
 {
 	/* Creazione albero */
