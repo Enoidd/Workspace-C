@@ -118,18 +118,21 @@ int main(int argc, char **argv)
 		/* Creazione nuovo albero */
 		//albero tree1 = new_tree();
 		albero tree1 = NULL;
+		albero tree2 = NULL;
 		/* IS_EMPTY -> Verifica albero vuoto */
 		//if(is_empty(tree1))
 		//	printf("\n -IS_EMPTY: Albero vuoto.\n");	// Atteso
 		//else
 		//	printf("\n -IS_EMPTY: Albero non vuoto.\n");
 		printf("\n==== MAIN =====\n");
+		printf("tree2: %d.\n", tree2);
 		printf("tree1: %d.\n", tree1);	// indirizzo puntato da tree1
 		printf("&tree1: %d.\n", &tree1);	// indirizzo di tree1
 		printf("*(&tree1): %d.\n", *(&tree1));	// dovrebbe essere uguale a *tree1
 		/* Inserimento radice */
 		add_root(&tree1, 10);	// radice di valore 10
 		printf("\n==== DOPO MAIN ====\n\n");
+		printf("tree2: %d.\n", tree2);
 		printf("tree1: %d.\n", tree1);	// indirizzo puntato da tree1
 		printf("&tree1: %d.\n", &tree1);	// indirizzo di tree1
 		printf("*tree1: %d.\n", *tree1);	// valore contenuto nel puntatore di tree1
