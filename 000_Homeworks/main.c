@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>	// adesso puoi usare malloc, calloc, realloc
-/* CIAO */
+/* CIAONE */
 /* ====================== QUARTO HOMERWORK ====================== */
 
 /* La funzione ritorna 1 se esattamente due elementi di A sono anche elementi di B, ritorna 0
