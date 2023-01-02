@@ -446,7 +446,7 @@ int contaFigliFoglie(albero t){
 	return count + contaFigliFoglie(t->left) && contaFigliFoglie(t->right);
 }
 
-/* Funzione che verifica se esiste almeno una fogli a destra in un albero */
+/* Funzione che verifica se esiste almeno una foglia a destra in un albero */
 int fogliaDestra(albero t){
 	if(t==NULL) return 0;
 
@@ -539,6 +539,87 @@ int numero_nodiDistanza(albero t){
 	numero_nodiDistanzaRic(t, 0);
 }
 
+/* Funzione che conta i nodi che hanno campo info uguale all'altezza dell'albero */
+int altezza(albero t){
+	if(t==NULL) return -1;
+
+	int l = altezza(t->left);
+	int r = altezza(t->right);
+
+	if(l>r) return l+1;
+	return r+1;
+}
+
+
+int campoInfo_ugualeLunghezza(albero t, int distanza){	// Funzione che verifica se campo info è uguale a lunghezza
+	if(t==NULL) return 0;
+
+	int count = 0;
+
+	if(t->info == distanza) 
+		count++;
+	return count + campoInfo_ugualeLunghezza(t->right, distanza) + campoInfo_ugualeLunghezza(t->left, distanza);
+}
+
+int conta_campoInfoUgualeLunghezza(albero t){	// Funzione che conta i nodi che hanno campo info pari all'altezza
+	if(t==NULL) return 0;
+
+	int distanza = altezza(t);	// calcola l'altezza 
+
+	return campoInfo_ugualeLunghezza(t, distanza);
+}
+
+/* Funzione che verifica che tutti i nodi dell'albero hanno campo info uguale all'altezza dell'albero */
+int nodi(albero t){
+	if(t==NULL)
+		return 0;
+	return 1 + nodi(t->left) + nodi(t->right);
+}
+
+int tuttiNodi(albero t){	// Verifica se tutti i nodi hanno campo info pari all'altezza dell'albero
+	if(t==NULL) return 0;
+
+	int tutti = nodi(t);
+	int distanza = altezza(t);
+
+	return tutti = campoInfo_ugualeLunghezza(t, distanza);
+}
+
+/* Funzione che verifica se ogni nodo di un albero ha campo info uguale al numero di nodi dell'albero completo */
+int verificaOgniNodo(albero t){
+	if(t==NULL) return 0;
+
+	int tutti = nodi(t);
+
+	return tutti == campoInfo_ugualeLunghezza(t, tutti);
+}
+
+/* Funzione che conta i nodi interni dell'albero */
+int contatoreNodiInterni(albero t){
+	if(t==NULL) return 0;
+
+	int count = 0;
+
+	if(t->left!=NULL && t->right==NULL)	count++;
+	if(t->left==NULL && t->right!=NULL)	count++;
+
+	return 1 + contatoreNodiInterni(t->left) + contatoreNodiInterni(t->right);
+}
+
+/* Funzione che verifica nell'albero se esiste un nodo che ha entrambi i figli foglie */
+int entrambi_figli_foglie(albero t){
+	if(t==NULL) return 0;
+
+	albero l = t->left;
+	albero r = t->right;
+
+	if(l!=NULL && r!=NULL){
+		if((l->left==NULL && l->right==NULL) && (r->left==NULL && r->right==NULL))
+			return 1;
+	}
+	return entrambi_figli_foglie(l->right) || entrambi_figli_foglie(r->left); 
+}
+
 int main(int argc, char **argv)
 {
 	/* Creazione albero */
@@ -553,10 +634,10 @@ int main(int argc, char **argv)
 	printf("\n===================\n");
 	
 	/* Inserimento radice */
-	add_root(&t, 10);
+	add_root(&t, 4);	// 10
 	/* Inserimento nodi */
-	nodo* tleft = add_left(t, 2);
-	nodo* tright = add_right(t, 3);
+	nodo* tleft = add_left(t, 4);	// 2
+	nodo* tright = add_right(t, 4);	// 3
 	nodo* ltleft = add_left(tleft, 4);
 
 	/*  IS_EMPTY */
@@ -638,6 +719,22 @@ int main(int argc, char **argv)
 	/* Funzione che calcola il n° di nodi dell'albero che hanno campo info
 	 * pari alla loro distanza dalla radice */
 	printf("Nodi con campo info pari alla loro distanza dalla radice contati: %d.\n", numero_nodiDistanza(t));
+
+	/* Funzione che conta i nodi che hanno campo info uguale all'altezza dell'albero */
+	printf("Numero nodi che hanno campo info pari all'altezza dell'albero: %d.\n", conta_campoInfoUgualeLunghezza(t));
+
+	/* Funzione che verifica che tutti i nodi dell'albero hanno campo info uguale all'altezza dell'albero */
+	printf("Tutti i nodi hanno campo info pari all'altezza dell'albero: %d.\n", tuttiNodi(t));
+
+	/* Funzione che verifica se ogni nodo di un albero ha campo info uguale al numero di nodi dell'albero completo */
+	printf("Ogni nodo ha campo info uguale al numero dei nodi dell'albero completo: %d.\n", verificaOgniNodo(t));	// Corretto
+
+	/* Funzione che conta i nodi interni dell'albero */
+	printf("Nodi interni dell'albero: %d.\n", contatoreNodiInterni(t));
+
+	/* Funzione che verifica se esiste nell'albero un nodo che ha entrambi figli foglie */
+	printf("Verifica se esiste un nodo con entrambi i figli foglie: %d.\n", entrambi_figli_foglie(t));
+
 	/* =============================== */
 
 	/* DEALLOCA ALBERO */
