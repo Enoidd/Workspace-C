@@ -359,13 +359,184 @@ void pota(nodo** n, nodo* x){
 }
 
 /* PARENTETICA SIMMETRICA */
+void parenteticaSim(albero t){
+	if(t==NULL){
+		printf("()");
+		return;
+	}
+
+	printf("(");
+	parenteticaSim(t->left);
+	printf("%d", t->info);
+	printf(")");
+	parenteticaSim(t->right);
+}
 
 /* PARENTETICA PREORDINE */
 
 /* Funzione che calcola il numero di nodi dell'albero che hanno lo stesso valore del genitore del genitore
  * cioè del nonno */
 int valoreNonno(albero t){
+	if(t==NULL) return 0;
+
+	int count = 0;
+
+	if(t->parent!=NULL){
+		if(t->parent->parent!=NULL){
+			if(t->parent->parent->info == t->info)
+				count++;
+		}
+	}
+	count = count + valoreNonno(t->left);
+	count = count + valoreNonno(t->right);
+}
+
+/* Funzione che calcola il numero di nodi che hanno esattamente due figli */
+int dueFigli(albero t){
+	if(t==NULL) return 0;
+
+	int count = 0;
+
+	/* caso base */
+	if(t->left!=NULL && t->right!=NULL)
+		count++;
+
+	return count + dueFigli(t->left) + dueFigli(t->right);
+}
+
+/* Funzione che calcola il numero di nodi che hanno esattamente 4 nipoti */
+int quattroNipoti(albero t){
+	if(t==NULL) return 0;
+
+	int count = 0;
+
+	/* caso base */
+	if(t->left!=NULL && t->right!=NULL){
+		if(t->left->left!=NULL && t->right->right!=NULL){
+			count++;
+		}
+	}
+	return count + quattroNipoti(t->left) + quattroNipoti(t->right);
+}
+
+/* HOMEWORK */
+
+/* PRE_ESAME */
+
+/* Funzione che conta tutti i nodi che sono foglie */
+int contaFigliFoglie(albero t){
+	if(t==NULL) return 0;
+
+	albero l = t->left;
+	albero r = t->right;
 	
+	int count = 0;
+	/* il sotto albero radicato a sx non è vuoto */
+	if(l!=NULL){
+		/* cerca a sx e dx */
+		if(l->left==NULL && l->right==NULL)	// è una foglia
+			count++;
+	}
+	else{
+		if(r!=NULL){
+			if(r->left==NULL && r->right==NULL)	// è una foglia
+				count++;
+		}
+	}
+	return count + contaFigliFoglie(t->left) && contaFigliFoglie(t->right);
+}
+
+/* Funzione che verifica se esiste almeno una fogli a destra in un albero */
+int fogliaDestra(albero t){
+	if(t==NULL) return 0;
+
+	albero r = t->right;
+
+	if(r!=NULL){
+		return 1;
+	}
+	return fogliaDestra(t->left) || fogliaDestra(t->right);
+}
+
+/* Funzione che conta i nodi che hanno figli foglie */
+int contaNodiConFigliFoglie(albero t){
+	if(t==NULL) return 0;
+
+	int count = 0;
+
+	if(t->left==NULL && t->right==NULL){
+		count++;
+	}
+	return count + contaNodiConFigliFoglie(t->left) + contaNodiConFigliFoglie(t->right);
+}
+
+/* Funzione che verifica se in un albero esiste una foglia e se questa ha valore uguale a 0 */
+int fogliaZero(albero t){
+	if(t==NULL)	return 0;
+
+	/* E'una foglia */
+	if(t->left==NULL && t->right==NULL){
+		if(t->info==0)
+			return 1;
+	}
+	return fogliaZero(t->left) || fogliaZero(t->right);
+}
+
+/* Funzione che verifica se in un albero ci sono esattamente 2 foglie con valore uguale a 0 */
+int DieciFoglie(albero t){
+	if(t==NULL) return 0;
+
+	int count = 0;
+
+	/* E' una foglia */
+	if(t->left==NULL && t->right==NULL){
+		if(t->info==0){	// campo info uguale a 0
+			count++;
+			if(count==2)
+				return 1;
+		}
+	}
+	return count + DieciFoglie(t->left) + DieciFoglie(t->right);
+}
+
+/* Funzione che calcola se esiste un nodo dell'albero che ha campo info pari alla sua distanza dalla radice */
+int nodiDistanzaRic(albero t, int count){
+	/* Se l'albero è vuoto */
+	if(t==NULL){
+		return 0;
+	}	// Altrimenti l'albero non è vuoto
+
+	if(t->info==count) return 1;
+
+	return nodiDistanzaRic(t->left,count+1) || nodiDistanzaRic(t->right,count+1);
+}
+
+int nodiDistanza(albero t){
+	if(t==NULL) return 0;
+
+	nodiDistanzaRic(t, 0);
+}
+
+/* Funzione che calcola il n° di nodi dell'albero che hanno campo info
+pari alla loro distanza dalla radice */
+int numero_nodiDistanzaRic(albero t, int count){
+	/* Se l'albero è vuoto */
+	if(t==NULL){
+		return 0;
+	}	// Altrimenti l'albero non è vuoto
+
+	int contatore = 0;
+
+	if(t->info==count)
+		contatore++;
+
+	return contatore + numero_nodiDistanzaRic(t->left,count+1) + numero_nodiDistanzaRic(t->right,count+1);
+}
+
+int numero_nodiDistanza(albero t){
+	if(t==NULL) return 0;
+
+	numero_nodiDistanzaRic(t, 0);
 }
 
 int main(int argc, char **argv)
@@ -432,16 +603,47 @@ int main(int argc, char **argv)
 	
 	/* CAMMINO */
 	if(cammino(t))
-		printf("\nL'albero è un cammino.\n");
+		printf("\nL'albero %c un cammino.\n", 138);
 	else
-		printf("\nL'albero non è un cammino.\n");
+		printf("\nL'albero non %c un cammino.\n", 138);
 	
 	/* AVERAGE */
 	printf("\nMedia dei nodi contenuti nell'albero: %d.\n", average(t));	// Atteso: 4
+
+	/* PARENTETICA SIMMETRICA */
+	printf("\n");
+	parenteticaSim(t);
+	printf("\n");
+
+	/* ========= PRE ESAME ========= */
+	
+	/* CONTA NODI FOGLIE */
+	printf("\nNodi foglie contati: %d.\n", contaFigliFoglie(t));
+
+	/* Verifica se nell'albero c'è almeno una foglia a destra */
+	printf("Una foglia a destra: %d.\n", fogliaDestra(t)); // Atteso: 1
+
+	/* Conta nodi con figli che sono foglie */
+	printf("ContaNodiConFigliFoglie: %d.\n", contaNodiConFigliFoglie(t));	// Atteso: 2
+
+	/* Verifica se esiste foglia con valore 0 */
+	printf("Foglia con valore 0: %d.\n", fogliaZero(t));	// Corretto
+
+	/* Verifica se nell'albero ci sono 2 foglie con valore 0 */
+	printf("Foglie con valore 0 contate: %d.\n", DieciFoglie(t));	// Corretto
+
+	/* Funzione che calcola se esiste un nodo dell'albero che ha campo info pari alla sua distanza dalla radice */
+	printf("Nodi con campo info pari alla loro distanza dalla radice trovati: %d.\n", nodiDistanza(t));	// Corretto
+
+	/* Funzione che calcola il n° di nodi dell'albero che hanno campo info
+	 * pari alla loro distanza dalla radice */
+	printf("Nodi con campo info pari alla loro distanza dalla radice contati: %d.\n", numero_nodiDistanza(t));
+	/* =============================== */
 
 	/* DEALLOCA ALBERO */
 	dealloca(&t);
 
 	/* IS_EMPTY */
 	printf("\nVerifica se l'albero 't' e' vuoto, valore calcolato: %d.\n", is_empty(t));	// Atteso: 1
+
 }
