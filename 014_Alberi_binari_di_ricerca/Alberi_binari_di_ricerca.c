@@ -34,13 +34,13 @@ int bst_insert(nodo** pt, int k){
     if(k < pt->key){
         /* Inserisci il nodo a sinistra */
         pt->left = new_tree_element(k); // inseriscilo
-        
+
     }
 }
 
 /* Funzione che aggiunge un nuovo nodo all'abr, se il nodo gia' esiste non viene aggiunto e la funzione ritorna false (0),
  * altrimenti ritorna true (1) */
-int tree_insert(nodo* pt, int k){
+void tree_insert(nodo* pt, int k){
     /* Se l'albero è vuoto */
     if((*pt)==NULL){
         (*pt) = new_tree_element(k);    // inserisco il primo nodo come radice
