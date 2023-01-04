@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Per ogni nodo x dell’albero: 
+/* Sono strutture dati utilizzate per implementare dizionari, cioè coppie <chiave, valore>
+ * nel caso in cui sulle chiavi (uniche) sia definita una relazione d'ordine totale.
+ * Per ogni nodo x dell’albero:
+ * Consultazione di un abr: Ricerca di un valore, calcolo del valore max o min
+ * Creazione e manutenzione di un abr: inserimento e cancellazione di nodi
  * tutti i nodi del sottoalbero sinistro di x hanno chiave minore di quella di x
  * tutti i nodi del sottoalbero destro di x hanno chiave maggiore di quella di x 
  * In un abr:
@@ -10,45 +14,102 @@
 
 /* Struttura nodo albero binario di ricerca */
 typedef struct abr{
-    struct nodo* parent;
+    struct abr* parent;
     int key;
-    struct nodo* left;
-    struct nodo* right; 
+    struct abr* left;
+    struct abr* right; 
 }nodo;
+
+/* ============================================================= VERSIONE SLIDE ============================================================= */
 
 /* Funzione che crea un nuovo nodo */
 nodo* new_tree_element(int k){
-    nodo* x = (nodo*)malloc(sizeof(nodo)); // 'x' è un oggetto 'abr'
-    x->parent = NULL;
-    x->left = NULL;
-    x->right = NULL;
-    x->key = k;
+    nodo* out = (nodo*)malloc(sizeof(nodo));
+    out->parent = NULL;
+    out->key = k;
+    out->left = NULL;
+    out->right = NULL;
 
-    return x;
+    return out;
 }
 
-/* Funzione che inserisce un nuovo nodo nell'abr */
-int bst_insert(nodo** pt, int k){
-    int out = 0;    // per verificare se il nodo è stato inserito
-    /* Se 'k' è minore del valore del suo genitore */
-    if(k < pt->key){
-        /* Inserisci il nodo a sinistra */
-        pt->left = new_tree_element(k); // inseriscilo
-
+/* Funzione che inserisce un nodo sotto al sottoalbero radicato a sx o dx */
+void bst_insert(nodo* pt, int k){
+    /* Verifica le condizioni di inserimento: 
+     * - Se l'oggetto da inserire è uguale al nodo corrente: rifiuta inserimento
+     * - Se l'oggetto da inserire è < del nodo corrente: sottoalbero sinistro
+     * - Altrimenti - Se l'oggetto da inserire è > del nodo corrente: sottoalbero destro */
+    nodo* nuovoNodo = new_tree_element(k);
+    
+    /* Oggetto uguale a nodo corrente */
+    if(pt->key == k){
+        printf("\nInserimento fallito.\n");
+        return;
+    }
+    /* Oggetto < nodo corrente */
+    if(pt->key > k){
+        /* Nodo ci sono nodi a sinistra */
+        if(pt->left==NULL){
+            nuovoNodo->parent = pt;
+            pt->left = nuovoNodo;
+            printf("\nInserimento sottoalbero sinistro.\n");
+        }   // Altrimenti ci sono nodi a sinistra aggiungilo come figlio del nodo a sinistra già esistente
+        else
+            bst_insert(pt->left, k);
+    }   // Altrimenti
+    else if(pt->key < k){ // se oggetto > nodo corrente
+        if(pt->right==NULL){
+            nuovoNodo->parent = pt;
+            pt->right = nuovoNodo;
+            printf("\nInserimento sottoalbero destro.\n");
+        }   // Altrimenti ci sono nodi a destra aggiungilo come figlio del nodo a destra già esistente
+        else
+            bst_insert(pt->right, k);
     }
 }
 
-/* Funzione che aggiunge un nuovo nodo all'abr, se il nodo gia' esiste non viene aggiunto e la funzione ritorna false (0),
- * altrimenti ritorna true (1) */
-void tree_insert(nodo* pt, int k){
+/* Se l'abr è vuoto: Funzione che inserisce un nuovo nodo nell'abr */
+void tree_insert(nodo** pt, int k){
     /* Se l'albero è vuoto */
     if((*pt)==NULL){
-        (*pt) = new_tree_element(k);    // inserisco il primo nodo come radice
-        return 1;
-    }   // Altrimenti albero non vuoto
-    return bst_insert(&(*pt), k);
+        (*pt) = new_tree_element(k);    // Inserisci il primo nodo come radice
+        return;
+    }
+    else{   // Altrimenti è già presente un nodo
+        bst_insert((*pt), k);
+        return;
+    }
+}
+
+/* ========================================================================================================================================== */
+
+void parentetica_simmetrica(nodo* a) {
+
+   if( a == NULL ) {
+      printf("()");
+      return;
+   }
+
+   printf("(");
+   parentetica_simmetrica(a->left);
+   printf("%d",a->key);
+   parentetica_simmetrica(a->right);
+   printf(")");
 }
 
 int main(){
 
+    nodo* abr = NULL;
+
+    tree_insert(&abr, 10);
+    //tree_insert(&abr, 1);    // Debug di correzione. Stampa: Inserimento non valido.  - Corretto -
+
+    tree_insert(&abr, 3);    // sx
+    tree_insert(&abr, 5);    // sx
+    tree_insert(&abr, 11);   // dx
+    tree_insert(&abr, 12);   // dx
+    tree_insert(&abr, 4);    // sx
+
+    parentetica_simmetrica(abr);
+    
 }
