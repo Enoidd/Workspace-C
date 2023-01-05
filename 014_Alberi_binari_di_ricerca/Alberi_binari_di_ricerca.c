@@ -83,6 +83,146 @@ void tree_insert(nodo** pt, int k){
 
 /* ========================================================================================================================================== */
 
+/* Funzione che calcola il valore minimo contenuto nell'abr */
+int tree_minimum(nodo* pt){
+    if(pt==NULL){
+        return 0;
+    }
+    while(pt->left!=NULL){
+        pt = pt->left;
+    }
+    return pt->key;
+}
+
+/* Funzione che calcola il valore massimo contenuto nell'abr */
+int tree_maximum(nodo* pt){
+    if(pt==NULL){
+        return 0;
+    }
+    while(pt->right!=NULL){
+        pt = pt->right;
+    }
+    return pt->key;
+}
+
+/* Funzione che cancella un nodo dall'abr */
+
+// Forward declaration
+void tree_bypass(nodo** t, nodo* x);
+
+void tree_delete(nodo* t, nodo* x){ // 'x' è il nodo che si vuole cancellare
+    
+    /* Metti in 'y' il minimo trovato a destra */
+    nodo* y = (nodo*)malloc(sizeof(nodo));
+    /* Se il nodo da cancellare (x) ha entrambi i figli */
+    if(x->left!=NULL && x->right!=NULL){
+        y = tree_minimum(x->right);
+        x->key =y->key; // memorizza anche il valore
+    }
+    else    // Altrimenti non ha entrambi i figli
+        y = x;
+    tree_bypass(&t, y);
+}
+
+void tree_bypass(nodo** t, nodo* x){    // Complessità Theta(1)
+    /* Il nodo 'x' ha un nodo figlio a sinistra */
+    nodo* figlio = (nodo*)malloc(sizeof(nodo));
+    if(x->left!=NULL){
+        figlio = x->left;   // il figlio del nodo da cancellare è a sinistra
+    }
+    else    // Altrimenti il figlio del nodo da cancellare è a destra
+        figlio = x->right;
+    /* Il figlio è != NULL */
+    if(figlio!=NULL)
+        figlio->parent = x->parent; // il parent del figlio diventa il parent del nodo da cancellare, cioè il parent del figlio non è il genitore ma il nonno
+    /* Se il parent è != NULL */
+    if(figlio->parent!=NULL){
+        /* Il nodo da cancellare è un figlio a sinistra */
+        if(x == x->parent->left)
+            x->parent->left = figlio;   // il campo left del nonno punta al nuovo nodo (salta quello cancellato)
+        else    // il nodo da cancellare è un figlio a destra
+            x->parent->right = figlio;
+    }
+    else    // Altrimenti il nodo figlio non ha parent, dunque è la radice
+        (*t) = figlio;
+}
+
+/* Funzione che ricerca un nodo con chiave k - ITERATIVA */
+nodo* iterative_tree_search(nodo* pt, int k){
+
+    while(pt!=NULL && k!=pt->key){
+        /* chiave minore della key corrente */
+        if(pt->key > k)
+            pt = pt->left;
+        else
+            pt = pt->right;
+    }
+    return pt;  // ritorna il riferimento al nodo
+}
+
+/* Funzione che ricerca un nodo con chiave k - RICORSIVA */
+nodo* recursive_tree_search(nodo* pt, int k){
+    if(pt==NULL)
+        return NULL;
+    if(pt->key==k)
+        return pt;
+    if(pt->key > k)
+        return recursive_tree_search(pt->left, k);
+    else
+        return recursive_tree_search(pt->right, k);
+}
+
+/* =========== Funzione che verifica se un albero è un abr =========== */
+
+/* NB. E'un abr se questo produce tutti elementi in ordine crescente. */
+int conta_nodi_albero(nodo* pt){
+    if(pt==NULL) return 0;
+    /* Contatore nodi sotto albero radicato a sinistra */
+    int l = conta_nodi_albero(pt->left);
+    int r = conta_nodi_albero(pt->right);
+
+    return 1 + l + r;
+}
+
+int tree_to_array(int* A, nodo* pt, int i){
+    if(pt!=NULL){
+        i = tree_to_array(A, pt->left, i);
+        A[i] = pt->key;
+        i = tree_to_array(A, pt->right, i+1);
+    }
+    return i;   // 'i' è la prossima posizione libera nell'array 'A'
+}
+
+
+int is_sorted(nodo* pt, int* A){ // Theta(n)
+    int numNodi = conta_nodi_albero(pt);
+    for(int i=0; i<numNodi-1; i++) {
+        for(int j=i+1; j<numNodi; j++) {
+            if(A[i]>A[j])
+                return 0;
+        }
+    }
+    return 1;
+}
+
+/* Funzione che visita l'albero e crea l'array, verifica se questo è un abr */
+int abr_sym(nodo* pt){ // Theta(n)
+    int count = conta_nodi_albero(pt);
+    //int* A[count];
+    int* A = malloc(conta_nodi_albero(pt)*sizeof(int));
+
+    tree_to_array(A, pt, 0);    // Riverso l'albero nell'array 'A'
+
+    printf("\nArray:\n");
+    for(int i=0; i<count; i++){
+        printf("[%d]", A[i]);
+    }
+    printf("\n");
+
+    return is_sorted(pt, A);
+}
+
+
 void parentetica_simmetrica(nodo* a) {
 
    if( a == NULL ) {
@@ -97,6 +237,11 @@ void parentetica_simmetrica(nodo* a) {
    printf(")");
 }
 
+/* Funzione che verifica se un albero è un abr con visita in preordine */
+
+
+/* Funzione che verifica se un albero è un abr con visita in postordine */
+
 int main(){
 
     nodo* abr = NULL;
@@ -104,12 +249,35 @@ int main(){
     tree_insert(&abr, 10);
     //tree_insert(&abr, 1);    // Debug di correzione. Stampa: Inserimento non valido.  - Corretto -
 
-    tree_insert(&abr, 3);    // sx
-    tree_insert(&abr, 5);    // sx
-    tree_insert(&abr, 11);   // dx
-    tree_insert(&abr, 12);   // dx
-    tree_insert(&abr, 4);    // sx
+    tree_insert(&abr, 29);
+    tree_insert(&abr, 16);
+    tree_insert(&abr, 7);
+    tree_insert(&abr, 45);
 
     parentetica_simmetrica(abr);
+
+    /* Tree_minimum */
+    printf("\nTree_minimum: %d.\n", tree_minimum(abr)); // Atteso 3
     
+    /* Tree_maximum */
+    printf("\nTree_maximum: %d.\n", tree_maximum(abr)); // ATteso 12
+
+    /* Iterative_tree_search */
+    if(iterative_tree_search(abr, 12)!=NULL)
+        printf("\nIterative_tree_search: trovato.\n");
+    else
+        printf("\nIterative_tree_search: non trovato.\n");
+
+    /* Recursive_tree_search */
+    if(recursive_tree_search(abr, 12)!=NULL)
+        printf("\nRecursive_tree_search: trovato.\n");
+    else
+        printf("\nRecursive_tree_search: non trovato.\n");
+
+    /* Verifica se un albero è un abr */
+    /* NB. Un albero se lo si trasforma in un array, se l'array ha tutti elementi posti in ordine crescente allora l'albero è un abr, no altrimenti */
+    if(abr_sym(abr))
+        printf("\nE' un abr.\n");
+    else
+        printf("\nNon e' un abr.\n");
 }
