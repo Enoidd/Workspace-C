@@ -136,6 +136,27 @@ void print_liste_adiacenza(grafo_liste* g){
     }
 }
 
+/* ====================== */
+
+/* ==== GRAFO MATRICE ==== */
+
+void print_matrice(grafo_matrice* g){
+    /* Righe */
+    for(int i=0; i < g->numero_nodi_matrice; i++){
+        /* Colonne */
+        for(int j=0; j < g->numero_nodi_matrice; j++){
+            printf("[%d]", g->A_matrice[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+/* ====================== */
+
+/* =========== ESERCIZI SLIDE =========== */
+
+
+
 int main(){
 
     /* Si vuole creare un grafo matrice con 10 nodi */
@@ -144,12 +165,26 @@ int main(){
     /* Si vuole creare un grafo liste con 20 nodi */
     grafo_liste* gl = new_grafo_liste(20);
 
-    /* Aggiungi arco tra i nodi */
+    /* GRAFO LISTE Aggiungi arco (diretto) tra i nodi */
     aggiungi_arco_liste(gl, 1, 2);  // aggiungi arco tra il nodo 1 e il nodo 2
     aggiungi_arco_liste(gl, 2, 3);  // aggiungi arco tra il nodo 2 e il nodo 3
     aggiungi_arco_liste(gl, 2, 6);  // aggiungi arco tra il nodo 2 e il nodo 6
 
-    /* Stampa */
+    /* GRAFO LISTE Stampa grafo liste */
     print_liste_adiacenza(gl);
-   
+
+    printf("\n\n");
+
+    /* GRAFO MATRICE Aggiungi arco (diretto) tra i nodi */
+    aggiungi_arco_matrice(gm, 1, 2);
+    aggiungi_arco_matrice(gm, 2, 3);
+    aggiungi_arco_matrice(gm, 2, 6);
+
+
+    /* GRAFO MATRICE Stampa grafo matrice */
+    print_matrice(gm);
+
+    printf("\n\n");
+
+
 }
