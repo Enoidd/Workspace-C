@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-/* Lezione 36 */
+/* Lezione 36, 37 */
 
 /* =========================== GRAFO LISTE =========================== */
 
@@ -32,9 +32,9 @@ typedef struct grafo_matrice_adiacenza{
         __            __     ______________
 int**  |__|---> int* |__|-->|__|__|__|__|__|
                      |__|    int (tipo di ogni casella)
-                     |__|
-                     |__|
-                     |__|
+                     |__|   ________________
+                     |__|-->|__|__|__|__|__|
+                     |__|-->|__|__|__|__|__| 
 
 */
 
@@ -45,9 +45,9 @@ int**  |__|---> int* |__|-->|__|__|__|__|__|
 /* Funzione che crea un grafo matrice con il numero dei nodi specificato e con zero archi */
 grafo_matrice* new_grafo_matrice(int num_nodi){
 
-    grafo_matrice* grafo = (grafo_matrice*)malloc(sizeof(grafo_matrice)); // allocazione memoria
-    grafo->numero_nodi_matrice = num_nodi;
-    grafo->A_matrice = (int**)calloc(num_nodi, sizeof(int*));   // g->A è di tipo int**
+    grafo_matrice* grafo = (grafo_matrice*)malloc(sizeof(grafo_matrice)); // allocazione memoria per un nuovo grafo
+    grafo->numero_nodi_matrice = num_nodi;  // Assegnazione grandezza grafo
+    grafo->A_matrice = (int**)calloc(num_nodi, sizeof(int*));   // (g->A è di tipo int**) Setta a tutti i nodi a 0
     /* per ogni elemento verticale devo allocare un elemento orizzontale */
     for(int i=0; i<num_nodi; i++){
         /* prendo la cella i-esima di questo array verticale e ci appoggio il risultato della calloc */
@@ -64,10 +64,10 @@ grafo_matrice* new_grafo_matrice(int num_nodi){
 /* Funzione che crea una grafo liste con il numero dei nodi specificato */
 grafo_liste* new_grafo_liste(int num_nodi){
     
-    grafo_liste* grafo = (grafo_liste*)malloc(sizeof(grafo_liste));
+    grafo_liste* grafo = (grafo_liste*)malloc(sizeof(grafo_liste)); // ALloco memoria per un nuovo grafo lista
 
-    grafo->numero_nodi_liste = num_nodi;
-    grafo->A_liste = (adiacenti_nodo**)calloc(num_nodi, sizeof(adiacenti_nodo*));
+    grafo->numero_nodi_liste = num_nodi;    // della dimensione introdotta 'num_nodi'
+    grafo->A_liste = (adiacenti_nodo**)calloc(num_nodi, sizeof(adiacenti_nodo*));   // (grafo->A_liste è di tipo int**)
     /* Non devo inizializzare a NULL tutto l'array g->A_liste perché ho fatto una calloc (clear calloc) e 0 è equivalente a NULL */
     return grafo;
 }
@@ -81,6 +81,16 @@ grafo_liste* new_grafo_liste(int num_nodi){
 void aggiungi_arco_matrice(grafo_matrice* g, int u, int v){ // prende la matrice 'g', e gli identificatori dei due nodi (che sono interi)
     /* Deve mettere a 1 il valore nella posizione all'interno della matrice dov'è presente l'arco tra i due nodi (nodo 'v' riga - nodo 'u' colonna) */
     g->A_matrice[u][v] = 1;
+
+    /*
+    Es. Tra il nodo 2 e nodo 0 c'è un arco, mentre in tutti gli altri non ci sono archi.
+    _0__1__2___3_
+    |__|__|__|__|0
+    |__|__|__|__|1
+    |1_|__|__|__|2
+    |__|__|__|__|3
+    
+    */
 }
 
 /* ==== GRAFO LISTE ==== */
@@ -91,9 +101,9 @@ void aggiungi_arco_liste(grafo_liste* g, int u, int v){ // prende la matrice 'g'
     adiacenti_nodo* new = g->A_liste[u];  // prendo la lista di adiacenza dell'arco 'u' da cui parto
     /* Scorro tutta la lista di adiacenza */
     while(new!=NULL){
-        /* se l'info è proprio uguale a 'v', quindi ho trovato un arco già presente */
-        if(new->info==v) return;
-        new = new->next;
+        /* se l'info del nodo 'u' da cui sono partito è proprio uguale a 'v', quindi ho trovato un arco già presente */
+        if(new->info==v) return;    // se l'ho trovato esci con 'return'
+        new = new->next;    // Altrimenti scorri tutta la lista
     }
     /* Reciclo il blocchetto 'new' che ho creato */
     new = (adiacenti_nodo*)malloc(sizeof(adiacenti_nodo));
@@ -116,10 +126,10 @@ void aggiungi_arco_liste(grafo_liste* g, int u, int v){ // prende la matrice 'g'
 void print_liste_adiacenza(grafo_liste* g){
 
     for(int i = 0; i<g->numero_nodi_liste; i++){
-        printf("[%d]", i);
-        adiacenti_nodo* x = g->A_liste[i];
-        while(x!=NULL){
-            printf("->[%d]", x->info);
+        printf("[%d]", i);  // Stampa l'array verticale
+        adiacenti_nodo* x = g->A_liste[i];  // Per ogni elemento dell'array verticale socrri la lista in orizzontale corrispondente
+        while(x!=NULL){ // fintanto che ci sono nodi da visitare nella lista dell'array in posizione i-esima
+            printf("->[%d]", x->info);  // stampa il suo valore
             x = x->next;
         }   // ho finito di scorrere in orizzontale
         printf("\n");
