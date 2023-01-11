@@ -312,9 +312,42 @@ int grado_uscita_medio_liste(grafo_liste* g_liste){
 /* Quando un nodo ha un cappio? Per le liste se sull'array di liste in verticale in posizione i-esima questo punta ad un valore 'x' 
 * e nell'array di liste in verticale nella posizione x-esima questo punta al valore i-esimo precedente allora c'è un cappio. 
 */
-/* Funzione GRAFO_SEMPLICE_LISTE(g) che verifica se il grafo è semplice (privo di cappi)*/
+/* Funzione GRAFO_SEMPLICE_LISTE(g) che verifica se il grafo è semplice (privo di cappi) 
+
+     __    __ __
+  1 |__|->|_2|1_|
+  2 |__|->|_2|
+  3 |__|   __ __ __
+  4 |__|->|__|__|__|
+  5 |__|
+  6 |__|
+  7 |__|
+   
+   
+*/
 int grafo_semplice_liste(grafo_liste* g_liste){
     int no_cappi = 1;
+    int temp;   // memorizza il valore puntato dalla lista di array 
+
+    /* Guardo la lista di array in verticale */
+    for(int i=0; i<g_liste->numero_nodi_liste; i++){
+        adiacenti_nodo* x = g_liste->A_liste[i];    // per scorrere la lista orizzontalmente
+        /* C'è un arco */
+        while(x!=NULL){
+            temp = x->info;
+            /* Scorri la lista a partire dal valore 'temp' sulla lista array in verticale */
+            adiacenti_nodo* y = g_liste->A_liste[temp];
+            /* C'è un arco */
+            while(y!=NULL){
+                /* l'arco punta proprio al valore trovato prima? */
+                if((x->info == y->info) && no_cappi)
+                    no_cappi = 0;
+                y = y->next;
+            }
+            x = x->next;
+        }
+    }
+    return temp;
 }
 
 
