@@ -203,7 +203,7 @@ int grado_entrata_matrice(grafo_matrice* g_matrice, int u){
 }
 
 /* Funzione GRADO_USCITA_MEDIO(g), che calcola il grado di uscita medio all'interno del grafo matrice 'g' */
-int grado_uscita_medio(grafo_matrice* g_matrice){
+int grado_uscita_medio_matrice(grafo_matrice* g_matrice){
     int grado_medio = 0;    // inizialmente nessun grado calcolato, si suppone non ci siano archi presenti
 
     /* Riga */
@@ -216,6 +216,30 @@ int grado_uscita_medio(grafo_matrice* g_matrice){
         }
     }
     return (int)(grado_medio/g_matrice->numero_nodi_matrice);   // faccio il casting a tipo INT della divisione per il calcolo del grado medio
+}
+
+/* Funzione GRAFO_SEMPLICE_MATRICE(g) che verifica se il grafo è semplice (privo di cappi) */
+/* Quando un nodo ha un cappio? Per la matrice se c'è un 1 nella stessa posizione, riga e colonna 
+  (V)_0__1__2___3_
+    |__|__|__|__|0 (U)
+    |__|__|__|__|1
+    |__|__|__|__|2
+    |__|__|__|1_|3
+    
+*/
+int grafo_semplice_matrice(grafo_matrice* g_matrice){
+    int no_cappi = 1;   // Si suppone non ci siano cappi
+
+    /* Riga */
+    for(int i=0; i<g_matrice->numero_nodi_matrice; i++){
+        /* Colonne */
+        for(int j=0; j<g_matrice->numero_nodi_matrice; j++){
+            /* C'è un cappio */
+            if(((i==j) && g_matrice->A_matrice[i][j]==1) && no_cappi)
+                no_cappi = 0;
+        }
+    }
+    return no_cappi;
 }
 
 /* =========== ESERCIZI SLIDE GRAFO LISTE =========== */
@@ -266,6 +290,31 @@ int grado_entrata_liste(grafo_liste* g_liste, int u){
             grado++;
         x = x->next;
     }
+}
+
+/* Funzione GRADO_USCITA_MEDIO_LISTE(g), che calcola il grado di uscita medio all'interno del grafo matrice 'g' */
+int grado_uscita_medio_liste(grafo_liste* g_liste){
+    int grado = 0;  // inizialmente si suppone il grado essere 0
+    /* Scorri la lista di array in verticale */
+    for(int i=0; i<g_liste->numero_nodi_liste; i++){
+        adiacenti_nodo* x = g_liste->A_liste[i];    // per scorrere orizzontalmente la lista
+        /* Se ci sono nodi presenti allora c'è un arco */
+        while(x!=NULL){
+            grado++;
+            x = x->next;
+        }
+    }
+    return (int)grado/g_liste->numero_nodi_liste;
+}
+
+
+/* Funzione GRAFO_SEMPLICE_LISTE(g) che verifica se il grafo è semplice (privo di cappi) */
+/* Quando un nodo ha un cappio? Per le liste se sull'array di liste in verticale in posizione i-esima questo punta ad un valore 'x' 
+* e nell'array di liste in verticale nella posizione x-esima questo punta al valore i-esimo precedente allora c'è un cappio. 
+*/
+/* Funzione GRAFO_SEMPLICE_LISTE(g) che verifica se il grafo è semplice (privo di cappi)*/
+int grafo_semplice_liste(grafo_liste* g_liste){
+    int no_cappi = 1;
 }
 
 
