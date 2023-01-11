@@ -84,8 +84,8 @@ void aggiungi_arco_matrice(grafo_matrice* g, int u, int v){ // prende la matrice
 
     /*
     Es. Tra il nodo 2 e nodo 0 c'è un arco, mentre in tutti gli altri non ci sono archi.
-    _0__1__2___3_
-    |__|__|__|__|0
+  (V)_0__1__2___3_
+    |__|__|__|__|0 (U)
     |__|__|__|__|1
     |1_|__|__|__|2
     |__|__|__|__|3
@@ -127,7 +127,7 @@ void print_liste_adiacenza(grafo_liste* g){
 
     for(int i = 0; i<g->numero_nodi_liste; i++){
         printf("[%d]", i);  // Stampa l'array verticale
-        adiacenti_nodo* x = g->A_liste[i];  // Per ogni elemento dell'array verticale socrri la lista in orizzontale corrispondente
+        adiacenti_nodo* x = g->A_liste[i];  // Per ogni elemento dell'array verticale scorri la lista in orizzontale corrispondente
         while(x!=NULL){ // fintanto che ci sono nodi da visitare nella lista dell'array in posizione i-esima
             printf("->[%d]", x->info);  // stampa il suo valore
             x = x->next;
@@ -175,6 +175,49 @@ grafo_liste* liste(grafo_matrice* g_matrice){
     return gl;
 }
 
+/* Funzione GRADO_USCITA_MATRICE(g, u), che calcola il grado di uscita del nodo con indice 'u'.
+ * Il grado di uscita rappresenta il numero dei suoi archi uscenti dal nodo 'u' */
+int grado_uscita_matrice(grafo_matrice* g_matrice, int u){  // 'u' è un indice inserito
+    int grado = 0;  // Inizialmente si suppone il grado essere 0
+    /* Riga - Devo scorrere solo la riga */
+    for(int i=0; i<g_matrice->numero_nodi_matrice; i++){
+        /* Ho trovato un arco sulla riga */
+        if(g_matrice->A_matrice[u][i]==1)
+            grado++;
+        }
+    return grado;
+}
+
+/* Funzione GRADO_ENTRATA_MATRICE(g, u), che calcola il grado di entrata nel nodo con indice 'u' .
+ * Il grado di entrata rappresenta il numero dei suoi archi entranti nel nodo 'u' */
+int grado_entrata_matrice(grafo_matrice* g_matrice, int u){
+    int grado = 0;  // si suppone il grado essere 0
+
+    /* Colonna - Devo scorrere la colonna per vedere quanti archi arrivano sul nodo 'u' */
+    for(int i=0; i<g_matrice->numero_nodi_matrice; i++){
+        /* Ho trovato l'arco sulla colonna */
+        if(g_matrice->A_matrice[i][u]==1)
+            grado++;
+    }
+    return grado;
+}
+
+/* Funzione GRADO_USCITA_MEDIO(g), che calcola il grado di uscita medio all'interno del grafo matrice 'g' */
+int grado_uscita_medio(grafo_matrice* g_matrice){
+    int grado_medio = 0;    // inizialmente nessun grado calcolato, si suppone non ci siano archi presenti
+
+    /* Riga */
+    for(int i=0; i<g_matrice->numero_nodi_matrice; i++){
+        /* Colonna */
+        for(int j=0; j<g_matrice->numero_nodi_matrice; j++){
+            /* il nodo che stai visitando ha un arco uscente */
+            if(g_matrice->A_matrice[i][j]==1)
+                grado_medio++;
+        }
+    }
+    return (int)(grado_medio/g_matrice->numero_nodi_matrice);   // faccio il casting a tipo INT della divisione per il calcolo del grado medio
+}
+
 /* =========== ESERCIZI SLIDE GRAFO LISTE =========== */
 
 /* Costruisce un grafo matrice da un grafo liste */
@@ -182,9 +225,46 @@ grafo_matrice* matrice(grafo_liste* g_liste){
 
     grafo_matrice* gm = new_grafo_matrice(g_liste->numero_nodi_liste);  // creo un grafo matrice, che è quello che devo ritornare di grandezza 'numero_nodi'
     
-    /* Scorri l'array di liste */
+    /* Scorri l'array di liste verticale */
     for(int i=0; i<g_liste->numero_nodi_liste; i++){
-        
+        adiacenti_nodo* x = g_liste->A_liste[i];    // per scorrere in orizzontale a partire dall'elemento i-esimo in verticale
+        /* c'è un nodo? - Scorri in orizzontale */
+        while(x!=NULL){ // sei in posizione 'i-esima' verticale e stai correndo l'elemento x-esimo in orizzontale quindi ('i'-->arco-->'x!=NULL')
+            gm->A_matrice[i][x->info] = 1;  // Nella posizione riga (i) e colonna (x->info) ci vado a mettere
+            x = x->next;    // passa al prossimo nodo se ce ne sono
+        }
+    }
+    return gm;
+}
+
+
+/* Funzione GRADO_USCITA_LISTE(g, u), che calcola il grado di uscita del nodo con indice 'u'.
+ * Il grado di uscita rappresenta il numero dei suoi archi uscenti nel nodo 'u' */
+int grado_uscita_liste(grafo_liste* g_liste, int u){
+    int grado = 0;  // inizialmente si suppone il grado essere 0
+    /* Scorri l'array di liste verticale */
+    for(int i=0; i<g_liste->numero_nodi_liste; i++){
+        adiacenti_nodo* x = g_liste->A_liste[i];    // per scorrere in orizzontale a partire dall'elemento i-esimo in verticale
+        /* c'è un nodo? - Scorri in orizzontale */
+        while(x!=NULL){
+            grado++;
+            x = x->next;    // passa al prossimonodo in orizzontale
+        }
+    }
+    return grado;
+}
+
+/* Funzione GRADO_ENTRATA_LISTE(g, u), che calcola il grado di entrata nel nodo con indice 'u' .
+ * Il grado di entrata rappresenta il numero dei suoi archi entranti nel nodo 'u' */
+int grado_entrata_liste(grafo_liste* g_liste, int u){
+    int grado = 0;  // inizialmente si suppone il grado essere 0
+    /* Scorri l'array di liste verticale */
+    for(int i=0; i<g_liste->numero_nodi_liste; i++){
+        adiacenti_nodo* x = g_liste->A_liste[i];    // per scorrere in orizzontale
+        /* l'elemento corrente ha valore 'u' */
+        if(x->info==u)  // c'è un arco allora
+            grado++;
+        x = x->next;
     }
 }
 
