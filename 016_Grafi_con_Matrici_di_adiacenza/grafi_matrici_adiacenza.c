@@ -193,7 +193,7 @@ int grado_uscita_matrice(grafo_matrice* g_matrice, int u){  // 'u' è un indice 
 int grado_entrata_matrice(grafo_matrice* g_matrice, int u){
     int grado = 0;  // si suppone il grado essere 0
 
-    /* Colonna - Devo scorrere la colonna per vedere quanti archi arrivano sul nodo 'u' */
+    /* Colonna - Devo scorrere la colonna 'u' per vedere quanti archi arrivano sul nodo 'u' */
     for(int i=0; i<g_matrice->numero_nodi_matrice; i++){
         /* Ho trovato l'arco sulla colonna */
         if(g_matrice->A_matrice[i][u]==1)
@@ -242,6 +242,11 @@ int grafo_semplice_matrice(grafo_matrice* g_matrice){
     return no_cappi;
 }
 
+/* Dati due grafi g1 e g2 rappresentati tramite array di liste di 
+adiacenza doppiamente concatenate
+Dunque scrivi la funzione VERIFICA_UNIONE(g1,g2) che verifica che tra ogni possibile coppia di nodi ci sia un arco in g1 o 
+in g2 (o in entrambi) */
+
 /* =========== ESERCIZI SLIDE GRAFO LISTE =========== */
 
 /* Costruisce un grafo matrice da un grafo liste */
@@ -266,14 +271,11 @@ grafo_matrice* matrice(grafo_liste* g_liste){
  * Il grado di uscita rappresenta il numero dei suoi archi uscenti nel nodo 'u' */
 int grado_uscita_liste(grafo_liste* g_liste, int u){
     int grado = 0;  // inizialmente si suppone il grado essere 0
-    /* Scorri l'array di liste verticale */
-    for(int i=0; i<g_liste->numero_nodi_liste; i++){
-        adiacenti_nodo* x = g_liste->A_liste[i];    // per scorrere in orizzontale a partire dall'elemento i-esimo in verticale
-        /* c'è un nodo? - Scorri in orizzontale */
-        while(x!=NULL){
-            grado++;
-            x = x->next;    // passa al prossimonodo in orizzontale
-        }
+
+    adiacenti_nodo* x = g_liste->A_liste[u];    // per scorrere in orizzontale a partire dall'elemento i-esimo in verticale        /* c'è un nodo? - Scorri in orizzontale */
+     while(x!=NULL){
+        grado++;
+        x = x->next;    // passa al prossimonodo in orizzontale
     }
     return grado;
 }
@@ -285,11 +287,14 @@ int grado_entrata_liste(grafo_liste* g_liste, int u){
     /* Scorri l'array di liste verticale */
     for(int i=0; i<g_liste->numero_nodi_liste; i++){
         adiacenti_nodo* x = g_liste->A_liste[i];    // per scorrere in orizzontale
-        /* l'elemento corrente ha valore 'u' */
-        if(x->info==u)  // c'è un arco allora
-            grado++;
-        x = x->next;
+        while(x!=NULL){
+            /* l'elemento corrente ha valore 'u' */
+            if(x->info==u)  // c'è un arco allora
+              grado++;
+             x = x->next;
+        }
     }
+    return grado;
 }
 
 /* Funzione GRADO_USCITA_MEDIO_LISTE(g), che calcola il grado di uscita medio all'interno del grafo matrice 'g' */
@@ -304,7 +309,7 @@ int grado_uscita_medio_liste(grafo_liste* g_liste){
             x = x->next;
         }
     }
-    return (int)grado/g_liste->numero_nodi_liste;
+    return (float)grado/g_liste->numero_nodi_liste;
 }
 
 
@@ -333,23 +338,54 @@ int grafo_semplice_liste(grafo_liste* g_liste){
     for(int i=0; i<g_liste->numero_nodi_liste; i++){
         adiacenti_nodo* x = g_liste->A_liste[i];    // per scorrere la lista orizzontalmente
         /* C'è un arco */
-        while(x!=NULL){
-            temp = x->info;
-            /* Scorri la lista a partire dal valore 'temp' sulla lista array in verticale */
-            adiacenti_nodo* y = g_liste->A_liste[temp];
-            /* C'è un arco */
-            while(y!=NULL){
-                /* l'arco punta proprio al valore trovato prima? */
-                if((x->info == y->info) && no_cappi)
-                    no_cappi = 0;
-                y = y->next;
-            }
-            x = x->next;
+        while(x!=NULL && no_cappi){
+            /* L'elemento corrente sull'array di liste in verticale con valore i-esimo è uguale all'elemento corrente visitato 
+            nella lista corrispondente in orizzontale */
+            if(i == x->info)
+                no_cappi = 0;
+            x = x->next;    // Altrimenti passa al prossimo nodo sulla lista in orizzontale
         }
     }
-    return temp;
+    return no_cappi;
 }
 
+/* Funzione VERIFICA_ARCO_LISTE(g,u,v) che restituisce true se esiste l’arco che va dal nodo identificato dall’indice 
+u al nodo indentificato dall’indice v e false altrimenti*/
+int verifica_arco_liste(grafo_liste* g_liste, int u, int v){
+    int arco_trovato = 0;   // HP. Arco non trovato
+
+    adiacenti_nodo* x = g_liste->A_liste[u];
+    /* Ho trovato un arco */
+    while(x!=NULL && !arco_trovato){
+        /* L'arco trovato va al nodo 'v' */
+        if(x->info == v)
+            arco_trovato = 1;
+        x = x->next;
+    }
+    return arco_trovato;
+    /*
+    Nel caso migliore la complessità è Theta(1) perché l'arco cercato è proprio il primo, nel caso peggiore è Theta(n) 
+    perché deve scorrere tutta la lista u-esima*/
+}
+
+/* VERIFICA_NON_ORIENTATO(g) che restituisce true se il grafo presenta un arco (u,v) per ogni arco (v,u) e false altrimenti*/
+/* Per vedere se il grafo non è orientato vado a controllare se per ogni nodo u,v esiste un collegamento v,u, altrimenti non ho capito
+la richiesta*/
+
+/* Funzione VERIFICA_POZZO_LISTE(g,u) che restituisce true se il nodo identificato dall’indice 'u' non ha archi 
+uscenti, false altrimenti */
+int verifica_pozzo_liste(grafo_liste* g_liste, int u){  // Theta(1)
+    //int grado_uscente = grado_uscita_liste(g_liste, u);
+    //return grado_uscente == 0;
+    /* Equivalente */
+    return grado_uscita_liste(g_liste, u)==0;   // Se non ha archi uscenti è un pozzo
+}
+
+/* Funzione VERIFICA_SORGENTE_LISTE(g,u) che restituisce true se il nodo identificato dall’indice 'u' non ha archi 
+entranti, false altrimenti*/
+int verifica_sorgente_liste(grafo_liste* g_liste, int u){   // Theta(1)
+    return grado_entrata_liste(g_liste, u)==0;  // Se non ha archi entranti è una sorgente
+}
 
 int main(){
 
@@ -357,32 +393,92 @@ int main(){
     grafo_matrice* gm = new_grafo_matrice(10);
 
     /* Si vuole creare un grafo liste con 20 nodi */
-    //grafo_liste* gl = new_grafo_liste(20);
+    grafo_liste* gl = new_grafo_liste(20);
 
     /* GRAFO LISTE Aggiungi arco (diretto) tra i nodi */
-    //aggiungi_arco_liste(gl, 1, 2);  // aggiungi arco tra il nodo 1 e il nodo 2
-    //aggiungi_arco_liste(gl, 2, 3);  // aggiungi arco tra il nodo 2 e il nodo 3
-    //aggiungi_arco_liste(gl, 2, 6);  // aggiungi arco tra il nodo 2 e il nodo 6
+    aggiungi_arco_liste(gl, 1, 2);  // aggiungi arco tra il nodo 1 e il nodo 2
+    aggiungi_arco_liste(gl, 2, 3);  // aggiungi arco tra il nodo 2 e il nodo 3
+    aggiungi_arco_liste(gl, 2, 6);  // aggiungi arco tra il nodo 2 e il nodo 6
+
+    printf("\n========= GRAFO LISTE ADIACENZA =========\n");
 
     /* GRAFO LISTE Stampa grafo liste */
-    //print_liste_adiacenza(gl);
+    print_liste_adiacenza(gl);
 
-    //printf("\n\n");
+    /* GRADO USCITA LISTE */
+    printf("\nGrado_uscita_liste nodo 3: %d.\n", grado_uscita_liste(gl, 3));  // Corretto
+
+    /* GRADO ENTRATA LISTE */
+    printf("\nGrado_entrata_liste nodo 2: %d.\n", grado_entrata_liste(gl, 2));  // Corretto
+
+    /* GRADO USCITA MEDIO LISTE */
+    printf("\nGrado_uscita_medio_liste: %f.\n", grado_uscita_medio_liste(gl));  // OK
+
+    /* GRAFO SEMPLICE LISTE */
+    if(grafo_semplice_liste(gl))    // Corretto
+        printf("\nGrafo liste semplice (privo di cappi).\n");
+    else
+        printf("\nGrafo liste con cappi.\n");
+
+    /* VERIFICA ARCO LISTE */
+    if(verifica_arco_liste(gl, 2, 3))   // verifica che esiste un arco che va dal nodo 2 al nodo 3 -- Corretto
+        printf("\nArco dal nodo 2 al nodo 3 presente nel grafo liste.\n");
+    else
+        printf("\nArco dal nodo 2 al nodo 3 non presente nel grafo liste.\n");
+
+    /* VERIFICA NON ORIENTATO */
+
+    /* VERIFICA POZZO LISTE */
+    if(verifica_pozzo_liste(gl, 2)) // Corretto
+        printf("\nIl nodo inserito e' un pozzo.\n");
+    else
+        printf("\nIl nodo inserito non e' un pozzo.\n");
+
+    /* VERIFICA SORGENTE LISTE */
+
+    printf("\n========= GRAFO MATRICE ADIACENZA =========\n");
+
+    printf("\n\n");
+
+    /* GRAFO MATRICE Stampa grafo matrice */
+    print_matrice(gm);
 
     /* GRAFO MATRICE Aggiungi arco (diretto) tra i nodi */
     aggiungi_arco_matrice(gm, 1, 2);
     aggiungi_arco_matrice(gm, 2, 3);
     aggiungi_arco_matrice(gm, 2, 6);
 
+    /* GRADO USCITA MATRICE */
+    printf("\nGrado_uscita_matrice nodo 3: %d.\n", grado_uscita_matrice(gm, 3));  // Corretto
 
-    /* GRAFO MATRICE Stampa grafo matrice */
-    print_matrice(gm);
+    /* GRADO ENTRATA MATRICE */
+    printf("\nGrado_entrata_matrice nodo 2: %d.\n", grado_entrata_matrice(gm, 2));  // Corretto
 
-    printf("\n\n");
+    /* GRADO USCITA MEDIO MATRICE */
+    printf("\nGrado_uscita_medio_matrice: %f.\n", grado_uscita_medio_matrice(gm));  // OK
+
+    /* GRAFO SEMPLICE MATRICE */
+    if(grafo_semplice_matrice(gm))  // Corretto
+        printf("\nGrafo matrice semplice (privo di cappi).\n");
+    else
+        printf("\nGrafo matrice con cappi.\n");
+
+
+/* ============================================================================================================== */
+    /* Si vuole creare un grafo liste con 20 nodi */
+    //grafo_liste* gl = new_grafo_liste(20);
+    /* GRAFO MATRICE Aggiungi arco (diretto) tra i nodi */
+    //aggiungi_arco_matrice(gm, 1, 2);
+    //aggiungi_arco_matrice(gm, 2, 3);
+    //aggiungi_arco_matrice(gm, 2, 6);
+
+    //printf("\n\n");
 
     /* Creo un grafo liste e gli passo la funzione che dal grafo matrice, trasforma il grafo in grafo liste */
-    grafo_liste* gl = liste(gm);
+    //grafo_liste* gl = liste(gm);    // Corretto
     
     /* Stampo il grafo liste creato dal grafo matrice */
-    print_liste_adiacenza(gl);
+    //print_liste_adiacenza(gl);  // OK
+
+/* ============================================================================================================== */
 }
