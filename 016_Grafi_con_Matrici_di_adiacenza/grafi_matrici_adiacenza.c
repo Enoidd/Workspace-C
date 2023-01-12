@@ -387,6 +387,15 @@ int verifica_sorgente_liste(grafo_liste* g_liste, int u){   // Theta(1)
     return grado_entrata_liste(g_liste, u)==0;  // Se non ha archi entranti è una sorgente
 }
 
+/* Funzione VERIFICA_UNIONE(g1,g2) che verifica che tra ogni possibile coppia di nodi ci sia un arco in g1 o in g2 (o in entrambi)
+puoi supporre che g1 e g2 abbiano lo stesso numero di nodi  */
+/* NON HO CAPITO LA RICHIESTA */
+
+/* Funzione VERIFICA_POZZI_E_SORGENTI(g1,g2) che restituisce true se tutti i pozzi di g1 sono sorgenti di g2 e tutte le sorgenti di g1 sono 
+pozzi di g2 e restituisce false altrimenti puoi suppore che g1 e g2 abbiano lo stesso numero di nodi. Puoi utilizzare le funzioni VERIFICA_POZZO(g,u) e 
+VERIFICA_SORGENTE(g,u) */
+/* NON HO CAPITO LA RICHIESTA */
+
 int main(){
 
     /* Si vuole creare un grafo matrice con 10 nodi */
