@@ -23,6 +23,7 @@ typedef struct struct_nodo{
     int id;
     elem_archi* archi;  // il nodo ha una lista di archi
     elem_nodi* pos; // posizione nella lista dei nodi del grafo
+    int color;  // marcatore per visita in ampiezza
 }nodo;
 /* ===================================================================================================================== */
 
@@ -72,6 +73,68 @@ typedef struct go{
     elem_archi* archi;  // puntatore alla lista degli archi
 }grafo_oggetti;
 
+/* Struttura coda di interi per VISITA IN AMPIEZZA */
+typedef struct coda_nodi{
+    int head;
+    int tail;
+    nodo** A;   // Array di nodi*
+    int size;
+}struct_cn;
+
+/* ====================================== PER VISITA IN AMPIEZZA ====================================== */
+
+/* Costruttore - Costruisce una coda di nodi */
+struct_cn* new_coda_di_nodi(int size){
+    /* Alloco memoria per una coda di nodi */
+    struct_cn* out = (struct_cn*)malloc(sizeof(struct_cn));
+    out->head = 0;
+    out->tail = 0;
+    out->A = (nodo**)malloc(sizeof(nodo*)); // array di puntatori a nodo
+
+    return out;
+}
+
+/* Funzione che fa un enqueue in una coda di nodi */
+void enqueue(struct_cn* c, nodo* v){
+    if((c->tail==c->head-1) || (c->tail==c->size-1 && c->head==0)){
+        c->size = c->size*2;
+        c->A = (nodo**)realloc(c->A, c->size*sizeof(nodo*));
+        if(c->tail < c->head){
+            int i;
+            for(i=0; i<c->tail; i++){
+                c->A[c->size/2+i] = c->A[i];
+            }
+            c->tail = c->size/2+i;
+        }
+    }
+    c->A[c->tail] = v;
+    c->tail = c->tail+1;
+    if(c->tail == c->size)
+        c->tail = 0;
+}
+
+/* Funzione che effettua una dequeue da una coda */
+nodo* dequeue(struct_cn* c){
+
+    if(c->head == c->tail){
+        printf("\nErrore underflow: dequeue da coda vuota.\n");
+        exit(1);
+    }
+    nodo* out = c->A[c->head];
+    c->head = c->head+1;
+    if(c->head == c->size)
+        c->head = 0;
+    
+    return out;
+}
+
+/* Funzione che verifica se una coda di nodi è vuota */
+int coda_di_nodi_is_empty(struct_cn* c){
+    return c->head==c->tail;
+}
+
+/* ==================================================================================================== */
+
 
 /* Costruttore - Costruisco un nuovo grafo oggetti vuoto */
 grafo_oggetti* new_grafo_oggetti(){
@@ -94,6 +157,7 @@ nodo* aggiungi_nodo(grafo_oggetti* go, int id){
     nodo* n = (nodo*)malloc(sizeof(nodo));
     n->id = id;
     n->archi = NULL;    // non ho inizialmente nessun arco su questo nodo
+    n->color = 0;
 
     elem_nodi* ln = (elem_nodi*)malloc(sizeof(elem_nodi));
     ln->info = n;
@@ -178,6 +242,7 @@ void stampa_grafo_oggetti(grafo_oggetti* go){
     printf("\n======== STAMPO I NODI ========\n");
     while(ln!=NULL){    // scorro la lista fintanto che ci sono nodi
         printf("\ntrovato nodo %d\n", ln->info->id);
+        printf("\n        colore %d.\n", ln->info->color);
         ln = ln->next;
     }
     elem_archi* la = go->archi;
@@ -270,6 +335,42 @@ void rimuovi_arco(grafo_oggetti* go, arco* a){
     free(a);
 }
 
+/* ====================================== VISITA IN AMPIEZZA ====================================== */
+
+/* Funzione che fa una visita in ampiezza sul grafo oggetti a partire dal nodo 'n' */
+void bfs_grafo_oggetti(grafo_oggetti* go, nodo* n){
+    /* NB. Mi serve una coda che abbia dentro dei puntatori ai nodi, altrimenti non posso fare la visita */
+    elem_nodi* ln = go->nodi;
+    while(ln!=NULL){    // scorro la lista dei nodi
+        // coloro il nodo corrente di 0
+        ln->info->color = 0;
+        ln = ln->next;
+    }
+    struct_cn* cn = new_coda_di_nodi(8);    // creo la coda di nodi
+    /* Devo scegliere chi è il primo nodo */
+    n->color = 1;   // marco come (visitato) "messo in coda"
+    enqueue(cn, n); // metto in coda di nodi 'cn' il nodo 'n' (che è un puntatore al nodo 'n')
+    /* Finot a che la coda non è vuota */
+    while(!coda_di_nodi_is_empty(cn)){
+        nodo* nodo_corrente = dequeue(cn);
+        /* guardo i suoi vicini, che ho nella lista archi */
+        elem_archi* la = nodo_corrente->archi;
+        while(la!=NULL){    // socrro lista archi adiacenti
+            nodo* altro_nodo = la->info->from;
+            /* Se il from sono io */
+            if(altro_nodo == nodo_corrente){
+                altro_nodo = la->info->to;
+            }
+            /* Devo vedere se altro_nodo è marcato */
+            if(altro_nodo->color == 0){ // è la prima volta che visito il nodo
+                altro_nodo->color = 1;  // lo marco come visitato
+                enqueue(cn, altro_nodo);    // lo metto in coda
+            }
+            la = la->next;  // passa al prossimo arco che esce da questo nodo
+        }
+    } 
+}
+
 int main(){
 
     /* Definisco (creo) un grafo oggetti chiamato 'go' */
@@ -280,6 +381,8 @@ int main(){
     nodo* n2 = aggiungi_nodo(go, 2);
     nodo* n3 = aggiungi_nodo(go, 3);
     nodo* n4 = aggiungi_nodo(go, 4);
+    nodo* n5 = aggiungi_nodo(go, 5);
+    nodo* n6 = aggiungi_nodo(go, 6);
 
     /* Stampa grafo oggetti */
     stampa_grafo_oggetti(go);
@@ -295,22 +398,33 @@ int main(){
     arco* a1 = aggiungi_arco(go, 1, n1, n2);   // aggiungo arco con id 1 che va da n1 a n2
     arco* a2 = aggiungi_arco(go, 2, n2, n4);   // aggiungo arco con id 2 che va da n2 a n4
     arco* a3 = aggiungi_arco(go, 3,  n4, n1);  // aggiungo arco con id 3 che va da n4 a n1
+    arco* a4 = aggiungi_arco(go, 4,  n5, n6);  // aggiungo arco con id 4 che va da n5 a n6
+    
     /* NB. avendo collegato in questo modo gli archi ho praticamente collegato i nodi formando un grafo a forma di triangolo */
 
     /* Stampa grafo oggetti */
     stampa_grafo_oggetti(go);
 
+    /* Faccio la visita in ampiezza */
+    bfs_grafo_oggetti(go, n1);
+
+     /* Stampa grafo oggetti */
+    stampa_grafo_oggetti(go);
+
+
+
     /* Rimuovo un arco */
-    printf("\nArco 'a2' rimosso.\n");
-    rimuovi_arco(go, a2);   // rimuovo l'arco 'a2' 
+    //printf("\nArco 'a2' rimosso.\n");
+    //rimuovi_arco(go, a2);   // rimuovo l'arco 'a2' 
 
     /* Ristampo */
-    stampa_grafo_oggetti(go);
+    //stampa_grafo_oggetti(go);
 
     /* Rimuovo un nodo */
-    printf("\nNodo 'n1' rimosso.\n");
-    rimuovi_nodo(go, n1);   // rimuovo il nodo 'n1'
+    //printf("\nNodo 'n1' rimosso.\n");
+    //rimuovi_nodo(go, n1);   // rimuovo il nodo 'n1'
 
     /* Ristampo */
-    stampa_grafo_oggetti(go);
+    //stampa_grafo_oggetti(go);
+
 }
