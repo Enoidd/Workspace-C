@@ -371,6 +371,10 @@ void bfs_grafo_oggetti(grafo_oggetti* go, nodo* n){
     } 
 }
 
+
+
+/* =============================================== VISITA IN PROFONDITA' =============================================== */
+
 /* Funzione che fa una visita in profondità per grafi NON CONNESSI */
 void dfs_ricorsiva(nodo* n){
     /* Quando lancio la dfs e entro sul nodo lo marco come visitato (color 1) */
@@ -388,6 +392,43 @@ void dfs_ricorsiva(nodo* n){
     }
 }
 
+/* Funzione che fa una visita in profondità di una componente connessa e la colora con il colore 'colore'  */
+void dfs_ricorsiva_colora(nodo* n, int colore){
+    /* Quando lancio la dfs e entro sul nodo lo marco come visitato (color 1) */
+    n->color = colore;   // marco il nodo come visitato
+    elem_archi* la = n->archi;
+    // per tutti gli archi che ci sono sulla lista
+    while(la!=NULL){
+        nodo* altro_nodo = la->info->from;  // nodo from dell'arco
+        if(altro_nodo == n)
+            altro_nodo = la->info->to;
+        if(altro_nodo->color == 0){    // se l'altro nodo non è colorato
+            dfs_ricorsiva_colora(altro_nodo, colore);
+        }
+        la = la->next;
+    }
+}
+
+/* Funzione che restituisce il numero dei nodi visitati */
+int dfs_ricorsiva_conta(nodo* n){   // ritorna i nodi visitati
+
+    int cont = 1;    // nodi visitati
+    n->color = 1;    // marco il nodo passato come visitato
+    elem_archi* la = n->archi;
+    // per tutti gli archi che ci sono sulla lista
+    while(la!=NULL){
+        nodo* altro_nodo = la->info->from;  // nodo from dell'arco
+        if(altro_nodo == n)
+            altro_nodo = la->info->to;
+        if(altro_nodo->color == 0){    // se l'altro nodo non è colorato
+            cont = cont + dfs_ricorsiva_conta(altro_nodo);    // lancio ricorsivamente sui nodi raggiungibili, si prende altro_nodo
+            //  e riporta tutti i nodi raggiunti dal lancio ricorsivo compreso 'altro_nodo' passato
+        }
+        la = la->next;
+    }
+    return cont;
+}
+
 void dfs_grafo_oggetti(grafo_oggetti* go, nodo* n){
     /* Quando faccio una visita la prima cosa che devo fare è marcare tutti i nodi con un colore non visitato (colore 0) */
     elem_nodi* ln = go->nodi;
@@ -398,9 +439,104 @@ void dfs_grafo_oggetti(grafo_oggetti* go, nodo* n){
     /* A questo punto lancio la procedura ricorsiva della funzione di visita */
     if(go->numero_nodi==0) return;  // verifica che ci sia almeno un nodo
     // se sei qui c'è almeno un nodo
-    dfs_ricorsiva(go->nodi->info);
+    dfs_ricorsiva(n);
 
 }
+
+/* Funzione che conta le componenti connesse */
+int num_componenti_connesse_grafo_oggetti(grafo_oggetti* go){
+    
+    int componenti_connesse = 0;
+    /* procedura che mette tutti i colori a 0 */
+    elem_nodi* ln = go->nodi;
+    while(ln!=NULL){
+        ln->info->color = 0;    // coloro tutto di zero
+        ln = ln->next;
+    }
+    ln = go->nodi;  // ripercorro la lista dei nodi e controllo quali sono i nodi non marcati
+    while(ln!=NULL){
+        /* Se il nodo corrente non è marcato */
+        if(ln->info->color==0){ // trovato nodo non visitato
+            componenti_connesse = componenti_connesse+1;
+            dfs_ricorsiva(ln->info);    // coloro il nodo
+        }
+        ln = ln->next;
+    }
+    return componenti_connesse;
+}
+
+/* VERSIONE 1 - Funzione che verifica se tutte le componenti hanno la stessa dimensione */
+int dimensione_componenti_uguali(grafo_oggetti* go){
+
+    int componenti_connesse = 0;
+    /* procedura che mette tutti i colori a 0 */
+    elem_nodi* ln = go->nodi;
+    while(ln!=NULL){
+        ln->info->color = 0;    // coloro tutto di zero
+        ln = ln->next;
+    }
+    ln = go->nodi;  // ripercorro la lista dei nodi e controllo quali sono i nodi non marcati
+    while(ln!=NULL){
+        /* Se il nodo corrente non è marcato */
+        if(ln->info->color==0){ // trovato nodo non visitato
+            componenti_connesse = componenti_connesse+1;
+            dfs_ricorsiva_colora(ln->info, componenti_connesse);    // coloro il nodo
+        }
+        ln = ln->next;
+    }
+    /* Quando ho finito di fare le visite */
+    /* Dentro componenti_connesse ho: il numero delle componenti connesse trovate */
+    /* Definisco un array di interi */
+    int* dim = (int*)calloc(componenti_connesse+1, sizeof(int));
+    ln = go->nodi;
+    /* Scorro nuovamente i nodi */
+    while(ln!=NULL){
+        /* Se il nodo corrente non è marcato */
+        dim[ln->info->color]++; // incremento l'array dim nella posizione del colore del nodo
+        ln = ln->next;
+    }    /* Qui l'array dim ha tutte le componenti connesse */
+    int j;
+    for(j = 2; j<=componenti_connesse; j++){
+        
+        if(dim[j]!=dim[1]){
+            free(dim);
+            return 0;   // trovata una componente connessa di dimensione diversa dalla prima 
+        }
+    }
+    free(dim);
+    return 1;
+}
+
+/* VERSIONE 2 - Funzione che verifica se tutte le componenti hanno la stessa dimensione */
+int dimensione_componenti_uguali_dfs_conta(grafo_oggetti* go){
+
+    /* procedura che mette tutti i colori a 0 */
+    elem_nodi* ln = go->nodi;
+    while(ln!=NULL){
+        ln->info->color = 0;    // coloro tutto di zero
+        ln = ln->next;
+    }
+    int nodi_prima_componente_connessa = 0;
+    ln = go->nodi;  // ripercorro la lista dei nodi e controllo quali sono i nodi non marcati
+    while(ln!=NULL){
+        /* Se il nodo corrente non è marcato */
+        if(ln->info->color==0){ // trovato nodo non visitato
+            int nodi_visitati = dfs_ricorsiva_conta(ln->info);    // coloro il nodo
+            if(nodi_prima_componente_connessa==0){  // ho visitato la prima componente
+                nodi_prima_componente_connessa = nodi_visitati;
+            }   // altrimenti se non è uguale a 0 non sono sulla prima componenti (l'ho già vista)
+            else{   // sono su una componente successiva
+                if(nodi_visitati != nodi_prima_componente_connessa){
+                    return 0;   // torvata una componente di diversa grandezza
+                }
+            }
+        }
+        ln = ln->next;
+    }
+    return 1;
+}
+
+/* ===================================================================================================================== */
 
 int main(){
 
@@ -414,6 +550,7 @@ int main(){
     nodo* n4 = aggiungi_nodo(go, 4);
     nodo* n5 = aggiungi_nodo(go, 5);
     nodo* n6 = aggiungi_nodo(go, 6);
+    nodo* n7 = aggiungi_nodo(go, 7);
 
     /* Stampa grafo oggetti */
     stampa_grafo_oggetti(go);
@@ -430,6 +567,7 @@ int main(){
     arco* a2 = aggiungi_arco(go, 2, n2, n4);   // aggiungo arco con id 2 che va da n2 a n4
     arco* a3 = aggiungi_arco(go, 3,  n4, n1);  // aggiungo arco con id 3 che va da n4 a n1
     arco* a4 = aggiungi_arco(go, 4,  n5, n6);  // aggiungo arco con id 4 che va da n5 a n6
+    arco* a5 = aggiungi_arco(go, 5,  n6, n7);  // aggiungo arco con id 4 che va da n6 a n7
     
     /* NB. avendo collegato in questo modo gli archi ho praticamente collegato i nodi formando un grafo a forma di triangolo */
 
@@ -437,12 +575,23 @@ int main(){
     stampa_grafo_oggetti(go);
 
     /* Faccio la visita in ampiezza */
-    bfs_grafo_oggetti(go, n1);
+    //bfs_grafo_oggetti(go, n1);
+    dfs_grafo_oggetti(go, n1);
 
      /* Stampa grafo oggetti */
     stampa_grafo_oggetti(go);
 
+    /* Conto le componenti connesse */
+    printf("\nNumero componenti connesse: %d.\n\n", num_componenti_connesse_grafo_oggetti(go));
 
+    /* Componenti connesse uguali */
+    printf("\nComponenti uguali: %d.\n\n", dimensione_componenti_uguali(go));
+
+    /* Componenti uguali dfs conta */
+    printf("\nComponenti uguali dfs conta: %d.\n\n", dimensione_componenti_uguali_dfs_conta(go));
+
+     /* Stampa grafo oggetti */
+    stampa_grafo_oggetti(go);
 
     /* Rimuovo un arco */
     //printf("\nArco 'a2' rimosso.\n");
