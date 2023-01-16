@@ -16,21 +16,7 @@ typedef nodo* albero;
     return new;
 }*/
 
-/* Funzione aggiungi radice */
-void add_root(nodo** punta_albero, int v){
-	/* Se l'albro ha già la radice */
-	if(*punta_albero!=NULL)
-		printf("\nError. Radice gia' esistente.\n");
-	// Altrimenti radice non esistente
-	nodo* root = malloc(sizeof(nodo));	// allocazione memoria per il nuovo nodo che rappresenta la radice dell'albero
-	root->p = NULL;	// la radice non ha parent
-	root->l = NULL;		// la radice inizialmente non ha nodi figli a sinistra
-	root->r = NULL;		// la radice inizialmente non ha nodi figli a destra
-	root->info = v;			// inizializzazione valore radice a 'v'
-	(*punta_albero) = root;	// aggiorna la radice dell'albero con la nuova radice
-}
-
-/*void add_root(nodo** t, int v){
+void add_root(nodo** t, int v){
     if((*t)!=NULL){
         printf("\nInserimento radice fallito. Radice gia' esistente\n");
         return;
@@ -41,9 +27,9 @@ void add_root(nodo** punta_albero, int v){
     root->r = NULL;
     root->info = v;
     (*t) = root;
-}*/
+}
 
-/*albero add_left(albero t, int v){
+albero add_left(albero t, int v){
     if(t->l!=NULL){
         printf("\nNodo a sinistra gia' esistente.\n");
     }
@@ -54,20 +40,8 @@ void add_root(nodo** punta_albero, int v){
     t->l->info = v;
 
     return t->l;
-}*/
-nodo* add_left(albero t, int x){
-	/* Se il nodo è gia' esistente */
-	if(t->l!=NULL)
-		printf("\nError overflow, add_left fallito.\n");
-	// Altrimenti 
-	t->l = (nodo*)malloc(sizeof(nodo));	// allocazione memoria per il nuovo nodo a sinistra
-	t->l->p = t;	// il nuovo nodo ha come parent il vecchio nodo 't'
-	t->l->l = NULL;	// inizialmente il nuovo nodo non ha nodi figli a sinistra
-	t->l->r = NULL;	// inizialmente il nuovo nodo non ha nodi figli a destra
-	t->l->info = x;	// inizializzazione valore nuovo nodo creato
-	
-	return t->l;
 }
+
 
 albero add_right(albero t, int v){
     if(t->r!=NULL){
@@ -213,14 +187,60 @@ int altezza(albero t){
     if(t==NULL)     return 0;
 
     int l = altezza(t->l);
+    printf("\nl %d.\n",l);
     int r = altezza(t->r);
-    
+    printf("\nr %d.\n",r);
     int max = l;
+    printf("max: %d.\n", max);
     if(r>max){
         max = r;
     }
     return max+1;    
 }
+
+/* Funzione che calcola la media dei valori contenuti nell'albero binario */
+int media(albero t){
+   
+
+}
+
+/* Funzione che verifica se l'albero binario è completo, ritorna true se l'albero è vuoto */
+/* NB. Un albero è completo se ogni nodo ha esattamente due nodi figli */
+/*int completoRic(albero t){
+    if(t==NULL) // albero vuoto
+        return -1;
+
+    if(t->l==NULL && t->r==NULL){
+        return -1;
+    }
+
+    int l = completo(t->l);
+    int r = completo(t->r);
+
+    if(l==-1 && r==-1)
+        return -1;
+
+    if(l!=r){
+        return -1;
+    }
+
+    return l+1;
+}
+
+int completo(albero t){
+    if(t==NULL)
+        return 1;
+
+    int ris = completoRic(t);
+
+    return ris!=-1;
+}*/
+
+/* Funzione che conta tutti i nodi che sono foglie */
+/*int contaFoglia(albero t){
+
+}*/
+
 
 int main(){
 
@@ -238,8 +258,8 @@ int main(){
     /* Aggiungi nodo a destra */
     nodo* r = add_right(t1, 3);
 
-    nodo* ll = add_left(l, 4);
-    nodo* lr = add_right(l, 5);
+    //nodo* ll = add_left(l, 4);
+    //nodo* lr = add_right(l, 5);
 
     /* Is empty */
     printf("\nis empty: %d.\n", is_empty(t1));  // atteso 0
@@ -282,4 +302,7 @@ int main(){
 
     /* Funzione che calcola l'altezza dell'albero */
     printf("\nAltezza (atteso: nd): %d.\n", altezza(t1));
+
+    /* Funzione albero completo */
+    //printf("\nAlbero completo (atteso 1): %d.\n", completo(t1));
 }
