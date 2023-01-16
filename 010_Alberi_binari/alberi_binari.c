@@ -14,7 +14,7 @@ typedef nodo* albero;	// ridefinizione nodo* in 'albero'
 albero new_tree(){
 	albero new_albero = malloc(sizeof(albero));	// alloca memoria per un nuovo nodo
 	new_albero = NULL;	// inizialmente albero vuoto
-	printf("\nnew_albero: %d.\n", new_albero);
+	//printf("\nnew_albero: %d.\n", new_albero);
 	return new_albero;
 }
 
@@ -25,11 +25,11 @@ int is_empty(albero tree){
 
 /* Funzione che aggiunge la radice all'albero - IMPLEMENTA:  */
 void add_root(nodo** puntatore_albero, int v){
-	printf("\n==== ADD_ROOT ->PRIMA<- della creazione della radice ====\n");
+	/*printf("\n==== ADD_ROOT ->PRIMA<- della creazione della radice ====\n");
 	printf("\npuntatore_albero: %d.\n", puntatore_albero);
 	printf("\n*puntatore_albero: %d.\n", *puntatore_albero);
 	printf("\n&puntatore_albero: %d.\n", &puntatore_albero);	
-	printf("\n*(&puntatore_albero): %d.\n", *(&puntatore_albero));
+	printf("\n*(&puntatore_albero): %d.\n", *(&puntatore_albero));*/
 	/* Se la radice già esiste */
 	if(*puntatore_albero!=NULL){
 		printf("\nError. Radice già esistente.\n");
@@ -42,13 +42,13 @@ void add_root(nodo** puntatore_albero, int v){
 	root->info = v;	// inizializzazione al valore
 	(*puntatore_albero) = root;	// il nuovo nodo è la testa della lista
 
-	printf("\n==== ADD_ROOT ->DOPO<- della creazione della radice ====\n");
+	/*printf("\n==== ADD_ROOT ->DOPO<- della creazione della radice ====\n");
 	printf("\nroot: %d.\n", root);
 	printf("\n*root: %d.\n", *root);
 	printf("\n&root: %d.\n", &root);	
 	printf("\n,root->info: %d.\n", root->info);
 
-	printf("\n*puntatore_albero: %d.\n", *puntatore_albero);
+	printf("\n*puntatore_albero: %d.\n", *puntatore_albero);*/
 
 
 }
@@ -124,22 +124,22 @@ int main(int argc, char **argv)
 		//	printf("\n -IS_EMPTY: Albero vuoto.\n");	// Atteso
 		//else
 		//	printf("\n -IS_EMPTY: Albero non vuoto.\n");
-		printf("\n==== MAIN =====\n");
-		printf("tree2: %d.\n", tree2);
-		printf("tree1: %d.\n", tree1);	// indirizzo puntato da tree1
-		printf("&tree1: %d.\n", &tree1);	// indirizzo di tree1
-		printf("*(&tree1): %d.\n", *(&tree1));	// dovrebbe essere uguale a *tree1
+		//printf("\n==== MAIN =====\n");
+		//printf("tree2: %d.\n", tree2);
+		//printf("tree1: %d.\n", tree1);	// indirizzo puntato da tree1
+		//printf("&tree1: %d.\n", &tree1);	// indirizzo di tree1
+		//printf("*(&tree1): %d.\n", *(&tree1));	// dovrebbe essere uguale a *tree1
 		/* Inserimento radice */
 		add_root(&tree1, 10);	// radice di valore 10
-		printf("\n==== DOPO MAIN ====\n\n");
-		printf("tree2: %d.\n", tree2);
-		printf("tree1: %d.\n", tree1);	// indirizzo puntato da tree1
-		printf("&tree1: %d.\n", &tree1);	// indirizzo di tree1
-		printf("*tree1: %d.\n", *tree1);	// valore contenuto nel puntatore di tree1
-		printf("*(&tree1): %d.\n", *(&tree1));	// dovrebbe essere uguale a *tree1
-		printf("tree1->info: %d.\n", tree1->info);	
-		printf("&tree1->info: %d.\n", &(tree1->info));
-		printf("&tree1->info: %d.\n", *(&(tree1->info)));
+		//printf("\n==== DOPO MAIN ====\n\n");
+		//printf("tree2: %d.\n", tree2);
+		//printf("tree1: %d.\n", tree1);	// indirizzo puntato da tree1
+		//printf("&tree1: %d.\n", &tree1);	// indirizzo di tree1
+		//printf("*tree1: %d.\n", *tree1);	// valore contenuto nel puntatore di tree1
+		//printf("*(&tree1): %d.\n", *(&tree1));	// dovrebbe essere uguale a *tree1
+		//printf("tree1->info: %d.\n", tree1->info);	
+		//printf("&tree1->info: %d.\n", &(tree1->info));
+		//printf("&tree1->info: %d.\n", *(&(tree1->info)));
 
 		/* Inserimento nodi nell'albero */
 		nodo* l = add_left(tree1, 2);
