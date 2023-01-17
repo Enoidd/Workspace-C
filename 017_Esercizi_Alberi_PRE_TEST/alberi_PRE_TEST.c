@@ -82,13 +82,14 @@ int search_pre_v1(albero t, int n){
 
     if(t==NULL) // albero vuoto
         trovato = 0;
-
-    if(t->info==n) // ho lanciato su di me
-        trovato = 1;
-    else{   // non ho lanciato su di me
-        trovato = search_pre_v1(t->l, n);   // lo cerco a sinistra
-        if(trovato==0)  // non l'ho ancora trovato 
-            trovato = search_pre_v1(t->r, n);   // lo cerco a destra
+    else{
+        if(t->info==n) // ho lanciato su di me
+            trovato = 1;
+        else{   // non ho lanciato su di me
+            trovato = search_pre_v1(t->l, n);   // lo cerco a sinistra
+            if(trovato==0)  // non l'ho ancora trovato 
+                trovato = search_pre_v1(t->r, n);   // lo cerco a destra
+        }
     }
     return trovato;
 }
@@ -184,65 +185,359 @@ int cammino(albero t){
 /* Funzione che calcola l'altezza di un albero, cioè il numero di archi del cammino che va dalla radice
  * alla foglia più profonda, ritorna -1 se l'albero è vuoto */
 int altezza(albero t){
-    if(t==NULL)     return 0;
+    if(t==NULL){
+        return -1;
+    }
 
     int l = altezza(t->l);
-    printf("\nl %d.\n",l);
     int r = altezza(t->r);
-    printf("\nr %d.\n",r);
+
     int max = l;
-    printf("max: %d.\n", max);
     if(r>max){
         max = r;
     }
+
     return max+1;    
 }
 
-/* Funzione che calcola la media dei valori contenuti nell'albero binario */
-int media(albero t){
-   
+/* Funzione che calcola la media dei valori contenuti nell'abero binario */
+void mediaRic(albero t, int* somma, int* count){
+    /* Per calcolare la media ho bisogno di sapere quanti nodi ci sono e la
+    somma di tutti i nodi*/
+    if(t==NULL)
+        return;
+    
+    (*somma) += t->info;
+    (*count) += (*count)+1;
+
+    mediaRic(t->l, somma, count);
+    mediaRic(t->r, somma, count);
 
 }
 
-/* Funzione che verifica se l'albero binario è completo, ritorna true se l'albero è vuoto */
-/* NB. Un albero è completo se ogni nodo ha esattamente due nodi figli */
-/*int completoRic(albero t){
-    if(t==NULL) // albero vuoto
+int media(albero t){
+    
+    int somma = 0;
+    int count = 0;
+
+    mediaRic(t, &somma, &count);
+
+    float ris = (float)somma/(float)count;
+    
+    return ris;
+}
+
+
+/* Funzione che verifica se l'albero è completo */
+int completoRic(albero t){
+    if(t==NULL){
         return -1;
+    }
 
     if(t->l==NULL && t->r==NULL){
-        return -1;
+        return 0;
     }
 
-    int l = completo(t->l);
-    int r = completo(t->r);
+    int l = completoRic(t->l);
+    int r = completoRic(t->r);
 
-    if(l==-1 && r==-1)
+    if(l==0 &&  r==0)
         return -1;
 
-    if(l!=r){
+    if(l!=r)
         return -1;
-    }
 
     return l+1;
+
 }
 
 int completo(albero t){
     if(t==NULL)
         return 1;
-
     int ris = completoRic(t);
 
     return ris!=-1;
-}*/
+}
 
-/* Funzione che conta tutti i nodi che sono foglie */
-/*int contaFoglia(albero t){
+/* ================================================================ PRE TEST ================================================================ */
 
-}*/
+
+/* Conta il numero dei nodi che sono foglie */
+int conta_nodi_foglie(albero t){
+    if(t==NULL) return 0;
+
+    int count = 0;
+    if(t->l==NULL && t->r==NULL){
+        count++;
+    }
+    return count + conta_nodi_foglie(t->l) + conta_nodi_foglie(t->r);
+}
+
+/* Verifica se esiste una foglia a destra */
+int foglia_dx(albero t){
+    if(t==NULL) return 0;
+
+    if(t->r!=NULL){
+        if(t->r->l==NULL && t->r->r==NULL)
+            return 1;
+    }
+    return foglia_dx(t->l) || foglia_dx(t->r);
+}
+
+/* Verifica se esiste una foglia a sinistra */
+int foglia_sx(albero t){
+    if(t==NULL) return 0;
+
+    if(t->l!=NULL){
+        if(t->l->l==NULL && t->l->r==NULL)
+            return 1;
+    }
+    return foglia_sx(t->l) || foglia_sx(t->r);
+}
+
+/* Verifica se esiste una foglia con campo info 0 */
+int foglia_info_0(albero t){
+    if(t==NULL) return 0;
+
+    if(t->l==NULL && t->r==NULL){
+        if(t->info==0)
+            return 1;
+    }
+    return foglia_info_0(t->l) || foglia_info_0(t->r);
+}
+
+/* Verifica se esistono due foglie con campo info 0 */
+int foglie_2_info_0(albero t){
+    if(t==NULL) return 0;
+
+    int count = 0;
+    if(t->l==NULL && t->r==NULL){
+        if(t->info==0)
+            count++;
+            if(count==2){
+                return 1;
+        }
+    }
+    return count + foglie_2_info_0(t->l) || foglie_2_info_0(t->r);
+}
+
+/* Funzione che calcolo l'altezza dell'albero */
+int height(albero t){
+    if(t==NULL){
+        return -1;
+    }
+
+    int l = height(t->l);
+    int r = height(t->r);
+
+    int max = l;
+    if(r>max){
+        max = r;
+    }
+
+    return max+1;
+}
+
+/* Funzione che calcola il numero dei nodi dell'albero */
+int numero_nodi(albero t){
+    if(t==NULL){
+        return 0;
+    }
+    return 1 + numero_nodi(t->l) + numero_nodi(t->r);
+}
+
+/* Calcola il numero dei nodi con campo info uguale a 2 */
+int numero_nodi_campo_info_uguale_a(albero t){
+    if(t==NULL){
+        return 0;
+    }
+
+    int count = 0;
+    if(t->info==2){
+        count++;
+    }
+
+    return count + numero_nodi_campo_info_uguale_a(t->l) + numero_nodi_campo_info_uguale_a(t->r);
+}
+
+/* Verifica se esiste un nodo con campo info pari all'altezza dell'albero */
+int verifica(albero t, int alt){
+    if(t==NULL){
+        return 0;
+    }
+
+    if(t->info==alt){
+        return 1;
+    }
+    return verifica(t->l, alt) || verifica(t->r, alt);
+}
+
+int campo_info_uguale_altezza(albero t){
+    /*if(t==NULL){
+        return 0;
+    }*/
+    int alt = height(t);
+    int ris = verifica(t, alt);
+
+    return ris;
+}
+
+/* Conta i nodi interni */
+int conta_nodi_interni(albero t){
+    if(t==NULL) return 0;
+
+    int count = 0;
+    if((t->l==NULL && t->r!=NULL) || (t->l!=NULL && t->r==NULL) || (t->l!=NULL && t->r!=NULL)){
+        count++;
+    }
+    return count + conta_nodi_interni(t->l) + conta_nodi_interni(t->r);
+}
+
+/* Esiste nodo campo info uguale distanza radice */
+int ric_campo_info_uguale_radice(albero t, int i){
+    if(t==NULL){
+        return 0;
+    }
+    if(t->info==i)
+        return 1;
+
+	return ric_campo_info_uguale_radice(t->l, i+1)||ric_campo_info_uguale_radice(t->r, i+1);
+}
+
+int campo_info_uguale_radice(albero t){
+    if(t==NULL){
+        return 0;
+    }
+
+    ric_campo_info_uguale_radice(t, 0);
+}
+
+/* Funzione che verifica se esiste un nodo che ha entrambi i figli foglie */
+int nodo_con_entrambi_figli_foglie(albero t){
+    if(t==NULL) return 0;
+
+    nodo* l = t->l;
+    nodo* r = t->r;
+
+    if(l!=NULL && r!=NULL){
+        if((l->l==NULL && l->r==NULL) && (r->l==NULL && r->r==NULL))
+            return 1;
+    }
+    return nodo_con_entrambi_figli_foglie(t->l) || nodo_con_entrambi_figli_foglie(t->r);
+}
+
+/* Numero nodi con campo info pari alla distanza dalla radice */
+int numero_nodi_info_distanza_radice_RIC(albero t, int i){
+    if(t==NULL){
+        return 0;
+    }
+    int count = 0;
+    if(t->info==i){
+        count++;
+    }
+
+    return count + numero_nodi_info_distanza_radice_RIC(t->l, i+1) + numero_nodi_info_distanza_radice_RIC(t->r, i+1);
+}
+
+int numero_nodi_info_distanza_radice(albero t){
+    if(t==NULL){
+        return 0;
+    }
+
+    numero_nodi_info_distanza_radice_RIC(t, 0);
+}
+
+/* Numero nodi foglie */
+int numero_nodi_foglie(albero t){
+    if(t==NULL){
+        return 0;
+    }
+
+    nodo* l = t->l;
+    nodo* r = t->r;
+
+    int count = 0;
+    if(l!=NULL && r!=NULL){
+        if((l->l==NULL && r->r==NULL) && (r->l==NULL && r->r==NULL))
+            count++;
+    }
+    return count + numero_nodi_foglie(t->l) + numero_nodi_foglie(t->r);
+}
 
 
 int main(){
+    //albero t1 = newTree();
+    albero t2 = NULL;
+
+    /* Aggiungi radice */
+    add_root(&t2, 1);
+    /* Aggiungi nodo a sinistra */
+    nodo* l_t2 = add_left(t2, 1);   // 2
+    /* Aggiungi nodo a destra */
+    nodo* r_t2 = add_right(t2, 0);
+    nodo* ll_t2 = add_left(l_t2, 2);
+    nodo* lr_t2 = add_right(l_t2, 6);
+
+    /*
+    - Numero nodi figli foglie
+    - Numero nodi foglie
+    - Esiste foglia a destra
+    - Esiste foglia a sinistra
+    - Foglia con campo info 0 
+    - Due foglie con campo info 0
+    - Altezza
+    - Numero nodi
+    - Numero nodi con campo info pari a 'x'
+    - Conta campo info stessa altezza
+    - Conta nodi interni
+    - Esiste nodo campo info uguale distanza radice
+    - Numero nodi con campo info uguale distanza radice
+    */
+
+    /* OK - Conta nodi con figli foglie */
+    printf("\nNumero nodi foglie (atteso: 3): %d.\n", conta_nodi_foglie(t2));
+
+    /* OK - Esiste foglia a destra */
+    printf("\nEsiste foglia a destra (atteso: 1): %d.\n", foglia_dx(t2));
+
+    /* OK - Esiste foglia a sinistra */
+    printf("\nEsiste foglia a sinistra (atteso: 1): %d.\n", foglia_sx(t2));
+
+    /* OK - Esiste foglia con campo info 0 */
+    printf("\nEsiste foglia con campo info 0 (atteso: 0): %d.\n", foglia_info_0(t2));
+
+    /* OK - Esistono due foglie con campo info 0 */
+    printf("\nEsistono 2 foglie con campo info 0 (atteso: 1): %d.\n", foglie_2_info_0(t2));
+
+    /* OK - Altezza dell'albero */
+    printf("\nAltezza albero (atteso 2): %d.\n", height(t2));
+
+    /* OK - Numero nodi */
+    printf("\nNumero nodi albero (atteso 5): %d.\n", numero_nodi(t2));
+
+    /* OK - Nodi con campo info uguale a */
+    printf("\nNumero di nodi con campo info pari a 2 (atteso 1): %d.\n", numero_nodi_campo_info_uguale_a(t2));
+
+    /* OK - Esiste nodo con campo info pari all'altezza dell'albero */
+    printf("\nEsiste nodo con campo info pari altezza albero (altezza albero = 2 - Atteso 1): %d.\n", campo_info_uguale_altezza(t2));
+
+    /* OK - Conta nodi interni (i nodi interni sono 2, root e l)*/
+    printf("\nNumero nodi interni (atteso 2): %d.\n", conta_nodi_interni(t2));
+
+    /* OK - Esiste nodo con campo info uguale alla sua distanza dalla radice */
+    printf("\nEsiste nodo con campo info pari alla sua distanza dalla radice (atteso 1): %d.\n", campo_info_uguale_radice(t2));
+
+    /* OK - Esiste un nodo con entrambi i figli foglie */
+    printf("\nEsiste un nodo con entrambi figli foglie (atteso 1): %d.\n", nodo_con_entrambi_figli_foglie(t2));
+
+    /* OK - Numero nodi con campo info pari alla loro distanza dalla radice */
+    printf("\nNumero nodi con campo info pari alla loro distanza dalla radice (atteso 2): %d.\n", numero_nodi_info_distanza_radice(t2));
+
+    /* OK - Numero di nodi che hanno entrambi i figli foglie */
+    printf("\nNumero nodi che hanno entrambi i figli foglie: %d.\n", numero_nodi_foglie(t2));
+}
+
+int main1(){
 
     //albero t1 = newTree();
     albero t1 = NULL;
@@ -259,7 +554,7 @@ int main(){
     nodo* r = add_right(t1, 3);
 
     //nodo* ll = add_left(l, 4);
-    //nodo* lr = add_right(l, 5);
+    //nodo* lr = add_right(l, 6);
 
     /* Is empty */
     printf("\nis empty: %d.\n", is_empty(t1));  // atteso 0
@@ -286,8 +581,8 @@ int main(){
 
     /* Search sim */
     printf("\n==Search sim\n");
-    printf("\nNodo con valore 4 trovato (atteso 1): %d.\n", search_post_v1(t1, 4));
-    printf("\nNodo con valore 3 trovato (atteso 1): %d.\n", search_post_v1(t1, 3));
+    printf("\nNodo con valore 4 trovato (atteso 1): %d.\n", search_sim(t1, 4));
+    printf("\nNodo con valore 3 trovato (atteso 1): %d.\n", search_sim(t1, 3));
     
     /* Search sim v1 */
     printf("\n==Search sim v1\n");
@@ -303,6 +598,12 @@ int main(){
     /* Funzione che calcola l'altezza dell'albero */
     printf("\nAltezza (atteso: nd): %d.\n", altezza(t1));
 
+    /* Funzione che calcola la media dei nodi nell'albero */
+    printf("\nMedia: %d.\n", media(t1));
+
     /* Funzione albero completo */
-    //printf("\nAlbero completo (atteso 1): %d.\n", completo(t1));
+    printf("\nAlbero completo (atteso 1): %d.\n", completo(t1));
+
+    /* PRE-ESAME */
+    printf("\n====== PRE-ESAME ======\n");
 }

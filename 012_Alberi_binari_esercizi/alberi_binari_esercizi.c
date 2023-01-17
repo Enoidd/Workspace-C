@@ -638,7 +638,7 @@ int main(int argc, char **argv)
 	/* Inserimento nodi */
 	nodo* tleft = add_left(t, 4);	// 2
 	nodo* tright = add_right(t, 4);	// 3
-	nodo* ltleft = add_left(tleft, 4);
+	nodo* ltleft = add_left(tleft, 0);
 
 	/*  IS_EMPTY */
 	printf("\n===== IS_EMPTY =====\n");
