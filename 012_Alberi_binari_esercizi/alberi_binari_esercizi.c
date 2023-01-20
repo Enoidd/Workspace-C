@@ -620,6 +620,7 @@ int entrambi_figli_foglie(albero t){
 	return entrambi_figli_foglie(l->right) || entrambi_figli_foglie(r->left); 
 }
 
+
 int main(int argc, char **argv)
 {
 	/* Creazione albero */

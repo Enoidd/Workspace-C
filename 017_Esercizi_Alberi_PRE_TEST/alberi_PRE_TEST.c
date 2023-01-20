@@ -316,7 +316,7 @@ int foglie_2_info_0(albero t){
             count++;
             if(count==2){
                 return 1;
-        }
+            }
     }
     return count + foglie_2_info_0(t->l) || foglie_2_info_0(t->r);
 }
@@ -464,6 +464,66 @@ int numero_nodi_foglie(albero t){
     return count + numero_nodi_foglie(t->l) + numero_nodi_foglie(t->r);
 }
 
+/* Verificase ogni nodo dell'albero ha due figli */
+int ogni_nodo_due_figli(albero t){
+    if(t==NULL){
+        return 0;
+    }
+
+    if(t->l!=NULL && t->r!=NULL)
+        return 1;
+
+    return ogni_nodo_due_figli(t->l) && ogni_nodo_due_figli(t->r);
+}
+
+/* Somma e conta nodi */
+/*void somma_conta_nodi(albero t, int* somma, int* conta){
+    if(t==NULL){
+        return 0;
+    }
+    if(t!=NULL){
+        *somma += *somma;
+        *conta++;
+    }
+}
+
+int somma_conta(albero t){
+    if(t==NULL){
+        return 0;
+    }
+    int somma, conta;
+
+    somma_conta_nodi(t, &somma, &conta);
+}*/
+
+
+/* INVENTATE */
+
+/* Albero con soli nodi a sinistra */
+int solo_nodi_sx(albero t){
+	if(t==NULL){
+		return 0;
+	}
+
+	if(t->l!=NULL && t->r==NULL)
+		return 1;
+
+	return solo_nodi_sx(t->l) && solo_nodi_sx(t->r);
+}
+
+/* Conta nodi a sx (variante a dx) */
+int foglia_sx(albero t){
+    if(t==NULL){
+        return 0;
+    }
+
+    int count = 0;
+    if(t->r!=NULL){
+        count++;
+    }
+
+    return count + foglia_sx(t->l) + foglia_dx(t->r);
+}
 
 int main(){
     //albero t1 = newTree();
@@ -478,21 +538,35 @@ int main(){
     nodo* ll_t2 = add_left(l_t2, 2);
     nodo* lr_t2 = add_right(l_t2, 6);
 
-    /*
-    - Numero nodi figli foglie
-    - Numero nodi foglie
-    - Esiste foglia a destra
-    - Esiste foglia a sinistra
-    - Foglia con campo info 0 
-    - Due foglie con campo info 0
-    - Altezza
-    - Numero nodi
-    - Numero nodi con campo info pari a 'x'
-    - Conta campo info stessa altezza
-    - Conta nodi interni
-    - Esiste nodo campo info uguale distanza radice
-    - Numero nodi con campo info uguale distanza radice
-    */
+/* ALBERI
+
+IN ORDINE SIA SOPRA CHE SOTTO
+
+- Numero nodi che hanno entrambi i figli foglie -OK
+- Numero nodi foglie -OK 
+- Esiste foglia a destra -OK
+- Esiste foglia a sinistra -OK
+- Foglia con campo info 0 	-OK
+- Due foglie con campo info 0	-OK
+- Altezza -OK
+- Numero nodi -OK
+- Numero nodi con campo info pari a 'x'	-OK
+- Esiste campo info stessa altezza albero	-OK
+- Conta nodi interni	-OK
+- Entrambi figli foglie	-OK
+- Esiste nodo campo info uguale distanza radice	-OK
+- Numero nodi con campo info uguale distanza radice -OK
+- Verifica se ogni nodo di un albero binario ha 2 figli (tranne le foglie)	-OK
+- Somma e conta nodi -OK (Si ma non trovo dove l'ho presa e non mi ricordo se doveva ritornare la somma sommata al numero di nodi)
+
+INVENTATE
+
+- Albero con soli figli a sinistra -OK
+- Conta nodi a sx (variante a dx) - OK
+- Nodi interni con campo info uguale distanza radice
+- Nodi foglie con campo info uguale distanza radice
+- Nodi con campo info uguale
+ */
 
     /* OK - Conta nodi con figli foglie */
     printf("\nNumero nodi foglie (atteso: 3): %d.\n", conta_nodi_foglie(t2));
@@ -535,6 +609,21 @@ int main(){
 
     /* OK - Numero di nodi che hanno entrambi i figli foglie */
     printf("\nNumero nodi che hanno entrambi i figli foglie: %d.\n", numero_nodi_foglie(t2));
+
+    /* OK - Ogni nodo dell'albero ha due figli tranne le foglie */
+    printf("\nOgni nodo dell'albero ha due figli (atteso 1): %d.\n", ogni_nodo_due_figli(t2));
+
+    /* OK - Somma e conta nodi */
+    // NB. non ritrovo da dove l'ho presa la consegna e non ricordo cosa doveva ritornare *PACE*
+
+    /* INVENTATE */
+    
+    /* Solo nodi a sinistra */
+    printf("\nSolo nodi a sinistra (atteso 1): %d.\n", solo_nodi_sx(t2));
+
+    /* Conta nodi a sinistra */
+    printf("\nConta nodi a sinistra (atteso 2): %d.\n", conta_solo_nodi_sinistra(t2));
+
 }
 
 int main1(){
