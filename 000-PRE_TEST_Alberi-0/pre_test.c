@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -287,6 +286,8 @@ int conta_solo_nodi_sinistra(albero t){
 
     return count + conta_solo_nodi_sinistra(t->l) + conta_solo_nodi_sinistra(t->r);
 }
+
+
 
 /* ========================================================================================================================================== */
 
