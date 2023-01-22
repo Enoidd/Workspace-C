@@ -251,6 +251,7 @@ void stampa_grafo_oggetti(grafo_oggetti* go){
         printf("\ntrovato arco %d\n", la->info->id);
         printf("          da %d\n", la->info->from->id);
         printf("          a %d\n", la->info->to->id);
+
         la = la->next;
     }
     printf("\n=======================================\n");
@@ -556,7 +557,7 @@ int main(){
     stampa_grafo_oggetti(go);
 
     /* Rimuovo il nodo */
-    printf("\nHo effettuato la cancellazione di un nodo (n3\n");
+    printf("\nHo effettuato la cancellazione di un nodo (n3)\n");
     rimuovi_nodo(go, n3);
 
     /* Stampa grafo oggetti */
