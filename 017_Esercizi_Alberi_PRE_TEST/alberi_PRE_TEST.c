@@ -525,6 +525,15 @@ int foglia_sx(albero t){
     return count + foglia_sx(t->l) + foglia_dx(t->r);
 }
 
+/***** ULTIMO PRE TEST ******/
+int figlio_sx_uguale_figlio_dx(albero t){
+    if(t==NULL) return 0;
+
+    if((t->l!=NULL && t->r!=NULL) && t->l->info==t->r->info) return 1;
+
+    return figlio_sx_uguale_figlio_dx(t->l) || figlio_sx_uguale_figlio_dx(t->r);
+}
+
 int main(){
     //albero t1 = newTree();
     albero t2 = NULL;
@@ -557,6 +566,7 @@ IN ORDINE SIA SOPRA CHE SOTTO
 - Esiste nodo campo info uguale distanza radice	-OK
 - Numero nodi con campo info uguale distanza radice -OK
 - Verifica se ogni nodo di un albero binario ha 2 figli (tranne le foglie)	-OK
+- ULTIMO PRE TEST - Verifica se esiste un nodo che abbia due nodi figli e il figlio a sx ha campo info uguale al figlio a dx
 - Somma e conta nodi -OK (Si ma non trovo dove l'ho presa e non mi ricordo se doveva ritornare la somma sommata al numero di nodi)
 
 INVENTATE
