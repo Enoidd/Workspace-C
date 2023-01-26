@@ -1,6 +1,55 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+
+
+/* ============================= ALBERO ARBITRARIO ============================= */
+
+typedef struct albero_arbitrario{
+    int info;
+    struct albero_arbitrario* left;
+    struct albero_arbitrario* right;
+}albero_ar;
+
+albero_ar* aggiungi_radice(albero_ar** pa, int v){
+    albero_ar* root = (albero_ar*)malloc(sizeof(albero_ar));
+    root->info = v;
+    root->left = NULL;
+    root->right = NULL;
+    (*pa)= root;
+    root = (*pa);
+
+    return root;
+}
+
+albero_ar* aggiungi_figlio(albero_ar* pa, int v){
+    albero_ar* figlio = (albero_ar*)malloc(sizeof(albero_ar));
+    figlio->info = v;
+    figlio->left = NULL;
+    figlio->right = pa->left;
+    pa->left = figlio;
+    return figlio;
+
+}
+
+/* Nodi campo info uguali a distanza radice */
+int ver(albero_ar* pa, int i){
+    if(pa==NULL) return 0;
+
+    if(pa->info==i)
+        return 1;
+
+    return ver(pa->left, i+1) || ver(pa->right, i+1);
+}
+
+int nodi_campo_info_uguali_distanza_radice(albero_ar* pa){
+    if(pa==NULL) return 0;
+
+    ver(pa, 0);
+}
+
+/* ============================================================================= */
+
 /* Struttura nodo albero */
 typedef struct nodo{
     struct nodo* p;
