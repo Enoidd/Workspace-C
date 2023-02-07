@@ -80,10 +80,52 @@ nodo* aggiungi_nodo(go* g, int value){
 }
 
 /* Funzione che aggiunge arco */
-void aggiungi_arco(go* g){
+arco* aggiungi_arco(go* g, int id, nodo* to, nodo* from){
     
-}
+    arco* a = (arco*)malloc(sizeof(arco));
+    a->id = id;
+    a->from = from;
+    a->to = to;
+    
+    // Aggiungo arco nella lista degli archi del grafo
+    elem_archi* la = (elem_archi*)malloc(sizeof(elem_archi));
+    la->info = a;
+    la->prev = NULL;
+    la->next = g->archi;
 
+    if(g->archi!=NULL){
+        g->archi->prev = la;
+    }
+    g->archi = la;
+    g->numero_archi++;
+    a->pos = g->archi;
+
+    // from
+    elem_archi* la_from = (elem_archi*)malloc(sizeof(elem_archi));
+    la_from->info = a;
+    la_from->prev = NULL;
+    la_from->next = from->archi;
+
+    if(from->archi!=NULL){
+        from->archi->prev = la_from;
+    }
+    from->archi = la_from;
+    a->f_pos = la_from;
+
+    // to
+    elem_archi* la_to = (elem_archi*)malloc(sizeof(elem_archi));
+    la_to->info = a;
+    la_to->prev = NULL;
+    la_to->next = to->archi;
+
+    if(to->archi!=NULL){
+        to->archi->prev = la_to;
+    }
+    to->archi = la_to;
+    a->to_pos = la_to;
+
+    return a;
+}
 
 /* Funzione stampa grafo */
 void print_grafo(go* g){
