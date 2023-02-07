@@ -81,7 +81,7 @@ nodo* aggiungi_nodo(go* g, int value){
 
 /* Funzione che aggiunge arco */
 void aggiungi_arco(go* g){
-    
+     
 }
 
 
