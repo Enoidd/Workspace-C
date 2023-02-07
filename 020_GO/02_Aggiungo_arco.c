@@ -8,7 +8,7 @@ typedef struct lista_archi elem_archi;
 typedef struct nodo{
     int id;
     elem_archi* archi;
-    elem_nodi* nodi;
+    elem_nodi* pos;
     int color;
 }nodo;
 
@@ -31,7 +31,7 @@ typedef struct lista_nodi{
 
 /* Lista archi */
 typedef struct lista_archi{
-    nodo* info;
+    arco* info;
     struct lista_archi* prev;
     struct lista_archi* next;
 }elem_archi;
@@ -81,7 +81,7 @@ nodo* aggiungi_nodo(go* g, int value){
 
 /* Funzione che aggiunge arco */
 void aggiungi_arco(go* g){
-     
+    
 }
 
 
@@ -98,6 +98,15 @@ void print_grafo(go* g){
 
         n = n->next;
     }
+
+    elem_archi* a = g->archi;
+    while(a!=NULL){
+        printf("\nArco trovato: %d.\n", a->info->id);
+        printf("\n     da nodo: [%d].\n", a->info->from->id);
+        printf("\n      a nodo: [%d].\n", a->info->to->id);
+
+        a = a->next;
+    }
 }
 
 
@@ -109,6 +118,8 @@ int main(){
     nodo* nodo_2 = aggiungi_nodo(grafo_oggetti_1, 3);
     nodo* nodo_3 = aggiungi_nodo(grafo_oggetti_1, 4);
     nodo* nodo_4 = aggiungi_nodo(grafo_oggetti_1, 5);
+
+    arco* arco_1 = aggiungi_arco(grafo_oggetti_1, 5, nodo_1, nodo_2);
 
     print_grafo(grafo_oggetti_1);
 }
