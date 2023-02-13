@@ -588,7 +588,7 @@ int main(){
     /* Componenti connesse uguali */
     printf("\nComponenti uguali: %d.\n\n", dimensione_componenti_uguali(go));
 
-    /* Componenti uguali dfs conta */
+    /* Componenti uguali dfs conta */ 
     printf("\nComponenti uguali dfs conta: %d.\n\n", dimensione_componenti_uguali_dfs_conta(go));
 
      /* Stampa grafo oggetti */
