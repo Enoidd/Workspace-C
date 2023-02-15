@@ -194,9 +194,11 @@ int main(){
     nodo* nodo_2 = aggiungi_nodo(grafo_oggetti_1, 3);
     nodo* nodo_3 = aggiungi_nodo(grafo_oggetti_1, 4);
     nodo* nodo_4 = aggiungi_nodo(grafo_oggetti_1, 5);
+    nodo* nodo_5 = aggiungi_nodo(grafo_oggetti_1, 6);
 
     arco* arco_1 = aggiungi_arco(grafo_oggetti_1, 5, nodo_1, nodo_2);
     arco* arco_2 = aggiungi_arco(grafo_oggetti_1, 5, nodo_2, nodo_3);
+    arco* arco_3 = aggiungi_arco(grafo_oggetti_1, 5, nodo_4, nodo_5);
 
-	printf("\nIl grafo contiene una componente connessa il cui num è pari alle componenti connesse del grafo: %d.\n", grafo_oggetti_1);
+	printf("\nIl grafo contiene una componente connessa il cui num di nodi e' pari alle componenti connesse del grafo: %d.\n", verifica(grafo_oggetti_1));
 }

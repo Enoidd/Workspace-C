@@ -423,6 +423,42 @@ int ogni_nodo_due_figli(albero t){
    return ogni_nodo_due_figli(t->l) && ogni_nodo_due_figli(t->r);
 }
 
+/***************------------------------------------------*******************/
+
+/*int foglia_meno_profonda_ric(albero t){
+    if(t==NULL) return 0;
+
+    if(t->l==NULL && t->r==NULL)
+        return 0;
+
+    int min_sx = foglia_meno_profonda_ric(t->l);
+    int min_dx = foglia_meno_profonda_ric(t->r);
+    
+    if(min_sx < min_dx) return min_sx;
+
+    return min_dx;
+}*/
+
+int verifica_ric(nodo* n, int numero__nodi){
+    if(n==NULL) return 0;
+
+    if(numero_nodi(n)==numero__nodi) return 1;
+
+    return verifica_ric(n->l, numero__nodi) || verifica_ric(n->r, numero__nodi);
+}
+
+/***************------------------------------------------*******************/
+
+int verifica(albero t){
+    if(t==NULL) return 0;
+
+    int n = numero_nodi(t);
+
+    if(n%2!=0)
+        return 0;
+
+    return verifica_ric(t, n/2);
+}
 
 int main(){
     //albero t1 = newTree();
@@ -433,7 +469,7 @@ int main(){
     /* Aggiungi nodo a sinistra */
     nodo* l_t2 = add_left(t2, 2);   // 2
     /* Aggiungi nodo a destra */
-    nodo* r_t2 = add_right(t2, 0);
+    //nodo* r_t2 = add_right(t2, 0);
     /* Aggiungi nodo a sinistra e a destra del nodo '1'*/
     nodo* ll_t2 = add_left(l_t2, 9);
     nodo* lr_t2 = add_right(l_t2, 6);
