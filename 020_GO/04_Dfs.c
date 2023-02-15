@@ -152,7 +152,64 @@ void stampa(go* g){
 
 /* Funzione che fa una visità in profondità a partire dal nodo 'n' per grafi non connessi */
 void dfs_ricorsiva(nodo* n){
-    
+    n->color = 1;
+
+    elem_archi* la = n->archi;
+    while(la!=NULL){
+        nodo* nodo_from = la->info->from;
+        if(nodo_from==n)
+            nodo_from = la->info->to;
+        if(nodo_from->color==0){
+            dfs_ricorsiva(nodo_from);
+        }
+        la = la->next;
+    }
+}
+
+int dfs_ricorsiva_conta(nodo* n){
+    int cont = 1;
+    n->color = 1;
+
+    elem_archi* la = n->archi;
+    while(la!=NULL){
+        nodo* nodo = la->info->from;
+        if(nodo==n)
+            nodo = la->info->to;
+        if(nodo->color==0){
+            cont = cont + dfs_ricorsiva_conta(nodo);
+        }
+        la = la->next;
+    }
+    return cont;
+}
+
+void dfs_grafo_oggetti(go* g, nodo* n){
+    elem_nodi* ln = g->nodi;
+    while(ln!=NULL){
+        ln->info->color = 0;
+        ln = ln->next;
+    }
+    if(g->numero_nodi==0) return;
+
+    dfs_ricorsiva(n);
+}
+
+int num_componenti_connesse(go* g){
+    int componenti_connesse = 0;
+    elem_nodi* ln = g->nodi;
+    while(ln!=NULL){
+        ln->info->color = 0;
+        ln = ln->next;
+    }
+    ln = g->nodi;
+    while(ln!=NULL){
+        if(ln->info->color==0){
+            componenti_connesse++;
+            dfs_ricorsiva(ln->info);
+        }
+        ln = ln->next;
+    }
+    return componenti_connesse;
 }
 
 int main(){
@@ -165,8 +222,11 @@ int main(){
     nodo* nodo_4 = add_nodo(grafo_1, 7);
 
     arco* a_1 = add_arco(grafo_1, 3, nodo_1, nodo_2);
+    arco* a_2 = add_arco(grafo_1, 6, nodo_2, nodo_3);
 
     stampa(grafo_1);
 
+    printf("\nNumero nodi visitati del grafo: %d.\n", dfs_ricorsiva_conta(nodo_3));
 
+    printf("\nNumero componenti connesse: %d.\n", num_componenti_connesse(grafo_1));
 }
