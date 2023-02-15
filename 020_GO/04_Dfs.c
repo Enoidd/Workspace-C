@@ -150,7 +150,10 @@ void stampa(go* g){
     }
 }
 
-/*  */
+/* Funzione che fa una visità in profondità a partire dal nodo 'n' per grafi non connessi */
+void dfs_ricorsiva(nodo* n){
+    
+}
 
 int main(){
 
