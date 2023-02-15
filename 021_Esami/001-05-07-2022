@@ -46,15 +46,6 @@ typedef struct grafo_oggetti{
     elem_archi* archi;
 }go;
 
-/* ================================ STRUTTURA ALBERO ================================ */
-
-typedef struct nodo_a{
-    struct nodo_a* p;
-    struct nodo_a* l;
-    int info;
-    struct nodo_a* r; 
-}nodo_albero;
-
 /* Funzione che crea un nuovo grafo */
 go* new_grafo(){
 
@@ -140,92 +131,58 @@ arco* aggiungi_arco(go* g, int id, nodo* to, nodo* from){
 
 /* ================================ FUNZIONI ESAME ================================ */
 
-/* Funzione che conta e colora i nodi che appartengono alla stessa componente connessa del nodo passato */
-int dfs_count(nodo* n){
-    
-    n->color = 1;
-    int count = 1;
-    elem_archi* lista_archi_n = n->archi;   // 1° arco notevole di 'n'
-    while(lista_archi_n!=NULL){
-        nodo* x = lista_archi_n->info->from;
-        if(x==n) 
-            x = lista_archi_n->info->to;
-        if(x->color==0)
-            count += dfs_count(x);
-        lista_archi_n = lista_archi_n->next;
-    }
-    return count;
+
+/* La funzione restituisce 1 (cioè true) se il grafo contiene almeno una componente connessa il cui numero di 
+nodi è pari al numero di componenti connesse del grafo stesso, altrimenti la funzione restituisce 0 (cioè 
+false). Se il grafo è vuoto (cioè uguale a NULL) la funzione ritorna 1 (true). */
+
+void dfs_colora(nodo* n, int color){
+	n->color = color;
+	elem_archi* lista_archi_n = n->archi;
+	while(lista_archi_n!=NULL){
+		nodo* x = lista_archi_n->info->from;
+		if(x==n)
+			x = lista_archi_n->info->to;
+		if(x->color==0)
+			dfs_colora(x, color);
+		lista_archi_n = lista_archi_n->next;
+	}
 }
 
-/* Funzione che ritorna il numero di nodi della componente connessa più grande */
-int componente_connessa_maggiore(go* g){
-
-    elem_nodi* clear_nodi = g->nodi;
-    while(clear_nodi!=NULL){
-        clear_nodi->info->color = 0;
-        clear_nodi = clear_nodi->next;
-    }
-    elem_nodi* lista_nodi = g->nodi;    // riparto dal primo nodo del grafo
-    int max = dfs_count(lista_nodi->info); // contiene il numero di nodi della componente connessa a cui appartiene il primo nodo salvato nella lista del grafo
-    int temp;
-    lista_nodi = lista_nodi->next;  // parto dal 2° nodo del grafo
-    while(lista_nodi!=NULL){    // scorro la lista dei nodi
-        /* per ogni nodo che visito devo vedere se l'ho già visto */
-        if(lista_nodi->info->color==0)
-            temp = dfs_count(lista_nodi->info);
-            if(temp>max)
-                max = temp;
-        lista_nodi = lista_nodi->next;
-    }
-    return max;
+/* Calcola il numero dei nodi della componente connessa */
+int componente_connessa(go* g, int comp){
+	int count = 0;
+	elem_nodi* n = g->nodi;
+	while(n!=NULL){
+		if(n->info->color==comp)
+			count++;
+		n = n->next;
+	}
 }
 
-/* Funzione che conta i nodi dell'albero */
-int nodi_albero(nodo_albero* t, int h){
+int verifica(go* g){
+	if(g==NULL) return 1;
 
-    if(t==NULL) return 0;
-    int count = 0;
-    if(h==0) count++;
-
-    nodo_albero* x = t->l;
-    while(x!=NULL){
-        count += nodi_albero(x, h-1);
-        x = x->r;
-    }
-}
-
-int height(nodo_albero* t){
-    if(t==NULL) return -1;
-
-    int max = 0;
-    nodo_albero* x = t->l;
-    while(x!=NULL){
-        int temp = height(x);
-        if(x->info > max) // x > max 
-            max = temp;
-        x = x->r;
-    }
-    return max+1;
-}
-
-/* */
-int verifica_ric(nodo_albero* a, int v){
-    if(a==NULL) return 0;
-
-    for(int i=0; i<height(a); i++){
-        if(nodi_albero(a, i)==v)
-            return 1;
-    }
-    return 0;
-}
-
-/* Funzione che conta la componente connessa del grafo */
-int verifica(nodo_albero* a, go* g){
-
-    if(a==NULL && g==NULL) return 0;
-    int numero_nodi_componente_max = componente_connessa_maggiore(g);
-
-    return verifica_ric(a, numero_nodi_componente_max);
+	elem_nodi* n = g->nodi;
+	while(n!=NULL){
+		n->info->color = 0;
+		n = n->next;
+	}
+	int color = 0;
+	n = g->nodi;
+	while(n!=NULL){
+		if(n->info->color==0){
+			color++;
+			dfs_colora(n->info, color);
+		}
+		n = n->next;
+	}
+	int comp;
+	for(comp = 1; comp <= color; comp++){
+		if(componente_connessa(g, comp) == color)
+			return 1;
+	}
+	return 0;
 }
 
 /* ========================== MAIN ========================== */
@@ -241,29 +198,5 @@ int main(){
     arco* arco_1 = aggiungi_arco(grafo_oggetti_1, 5, nodo_1, nodo_2);
     arco* arco_2 = aggiungi_arco(grafo_oggetti_1, 5, nodo_2, nodo_3);
 
-	//TEST SU alberi arbitrari
-	nodo_albero* a0 = NULL;
-	
-	//liv 0
-	add_root_arb(&a0,3);
-
-	//liv 1
-	nodo* n2=add_left_arb(a0,20);
-	nodo* n1=add_left_arb(a0,1);
-	//liv 2
-	nodo* n3=add_left_arb(n1,1); //foglia
-	nodo* n4=add_left_arb(n1,1); //foglia
-	nodo* n5=add_left_arb(n1,1);
-	nodo* n6=add_left_arb(n1,1); //foglia
-	nodo* n7=add_left_arb(n2,1);
-	//liv 3
-	nodo* n8=add_left_arb(n5,3); //foglia
-	nodo* n9=add_left_arb(n5,30);
-	nodo* n10=add_left_arb(n7,1); //foglia
-	nodo* n11=add_left_arb(n7,1); //foglia
-	//liv 4
-	nodo* n12=add_left_arb(n9,32); //foglia
-
-    printf("\nVerifica: %d.\n", a0, grafo_oggetti_1);
-	
+	printf("\nIl grafo contiene una componente connessa il cui num è pari alle componenti connesse del grafo: %d.\n", grafo_oggetti_1);
 }
