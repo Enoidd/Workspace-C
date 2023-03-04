@@ -110,7 +110,7 @@ int dfs_conta(nodo* n){
         ln = ln->next;
     }
     return
-}
+}..
 
 /* Funzione che conta i figli di un nodo di un albero arbitrario */
 int conta_nodi_figli(nodo* n){
