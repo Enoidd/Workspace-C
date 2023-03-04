@@ -119,7 +119,7 @@ int conta_nodi_figli(nodo* n){
     int count = 0;
     while(n->left!=NULL){
         count++;
-        n = n->right;
+        n = n->right;.
     }
     return count;
 }
