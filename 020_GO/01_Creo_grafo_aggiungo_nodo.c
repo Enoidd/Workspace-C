@@ -5,7 +5,7 @@ typedef struct lista_nodi elem_nodi;
 
 typedef struct lista_archi elem_archi;
 
-/* Struttura nodo *//
+/* Struttura nodo */
 typedef struct nodo{
     int id;
     elem_archi* archi;
