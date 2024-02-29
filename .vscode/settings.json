@@ -2,6 +2,5 @@
     "files.associations": {
         "stdlib.h": "c"
     },
-    "cmake.configureOnOpen": true,
-    "C_Cpp.errorSquiggles": "disabled"
+    "cmake.configureOnOpen": true
 }
