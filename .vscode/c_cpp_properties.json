@@ -11,7 +11,7 @@
                 "_UNICODE"
             ],
             "cStandard": "gnu23",
-            "compilerPath": "c:/TDM-GCC-64/mingwvars.bat"
+            "compilerPath": "C:/TDM-GCC-64/bin/gcc.exe"
         }
     ],
     "version": 4
